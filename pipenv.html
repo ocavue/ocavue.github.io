@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Pipenv：Python 官方钦定的包管理工具 | Ocavue&#39;s Blog</title>
+    <meta name="description" content="Just playing around">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.c77a0a89.css" as="style"><link rel="preload" href="/assets/js/app.3390545e.js" as="script"><link rel="preload" href="/assets/js/7.4335dcfb.js" as="script"><link rel="preload" href="/assets/js/15.07692fc6.js" as="script"><link rel="prefetch" href="/assets/js/10.3cc39aa1.js"><link rel="prefetch" href="/assets/js/11.ac7ff37e.js"><link rel="prefetch" href="/assets/js/12.6f0b04a4.js"><link rel="prefetch" href="/assets/js/13.8586ab88.js"><link rel="prefetch" href="/assets/js/14.2c8898b5.js"><link rel="prefetch" href="/assets/js/16.0fd9f730.js"><link rel="prefetch" href="/assets/js/17.62e65e2b.js"><link rel="prefetch" href="/assets/js/18.56cc483b.js"><link rel="prefetch" href="/assets/js/2.cdefbf3e.js"><link rel="prefetch" href="/assets/js/3.b05d599e.js"><link rel="prefetch" href="/assets/js/4.e52bb422.js"><link rel="prefetch" href="/assets/js/5.13d50fda.js"><link rel="prefetch" href="/assets/js/6.5bab4f56.js"><link rel="prefetch" href="/assets/js/8.da20465b.js"><link rel="prefetch" href="/assets/js/9.cc10bcad.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.c77a0a89.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="root"><span class="cover" data-v-1164ecfe></span> <div class="sidebar" data-v-cf3bad4a><div class="sidebar__header" data-v-cf3bad4a><a href="/about.html" class="sidebar__header-avatar" style="background-image:url(https://ws1.sinaimg.cn/large/006tNc79gy1fom9qicqcej30e80e83zo.jpg);" data-v-cf3bad4a></a></div> <nav class="sidebar__nav" data-v-cf3bad4a><a href="/" class="sidebar__nav-item router-link-active" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-home" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>HOME</span></a> <a href="/about.html" class="sidebar__nav-item" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-face" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>ABOUT</span></a> <a href="/tag/" class="sidebar__nav-item" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-tag" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>TAGS</span></a></nav></div> <div class="toc" data-v-ea388812><a href="#背景知识" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        背景知识
+    </a><a href="#安装" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        安装
+    </a><a href="#基本用法" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        基本用法
+    </a><a href="#pipenv-解决了哪些问题？" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        Pipenv 解决了哪些问题？
+    </a><a href="#虚拟环境和-pip-不能同时使用" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        虚拟环境和 pip 不能同时使用
+    </a><a href="#pip-不能精确地指定版本" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        pip 不能精确地指定版本
+    </a><a href="#pipenv-的其他特性" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        Pipenv 的其他特性
+    </a><a href="#为什么-pipenv-使用-virtualenv-而不是标准库中的-venv？" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        为什么 Pipenv 使用 virtualenv 而不是标准库中的 venv？
+    </a><a href="#将-virtualenv-环境的位置改为工程目录下" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        将 virtualenv 环境的位置改为工程目录下
+    </a><a href="#使用不同版本的-python-程序" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        使用不同版本的 python 程序
+    </a><a href="#自定义脚本快捷命令" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        自定义脚本快捷命令
+    </a><a href="#继续学习-pipenv" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        继续学习 Pipenv
+    </a><a href="#总结" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        总结
+    </a></div> <header class="toolbar" data-v-5fd7a81e><span class="toolbar__button icon-menu" data-v-5fd7a81e></span> <a href="/" class="toolbar__item router-link-active" data-v-5fd7a81e>
+        Ocavue's Blog
+    </a> <span style="flex: 1;" data-v-5fd7a81e></span> <span class="toolbar__button icon-toc" data-v-5fd7a81e></span></header> <main class="app__main"><div class="post" data-v-a962948a><a href="/pipenv.html" class="router-link-exact-active router-link-active post__img post__img--nolink" style="background-image:linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.60) 100%), url('https://i.loli.net/2019/05/06/5ccfe892c0581.jpg');" data-v-a962948a><span class="post__img-title" data-v-a962948a>
+            Pipenv：Python 官方钦定的包管理工具
+        </span> <span class="post__img-info" data-v-a962948a><span data-v-a962948a>2018-09-19</span></span></a> <div class="post__content markdown-body" data-v-a962948a><div class="content default"><p>今天给大家介绍的是 python 包管理工具 Pipenv。在 Python 的<a href="https://packaging.python.org/guides/tool-recommendations/#application-dependency-management" target="_blank" rel="noopener noreferrer">官方文档<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>中，有这么一段话：</p> <blockquote><p>Use Pipenv to manage library dependencies when developing Python applications ... Consider other tools such as <code>pip</code> when <code>pipenv</code> <strong>does not</strong> meet your use case.&quot;</p></blockquote> <p>也就是说 Python 官方认为 Pipenv 比 pip 更加适合一般的用户。作为一个第三方工具，能从官方获得如此高的评价实属不易。这篇文章就向大家简要介绍一下这个工具。</p> <p><img src="http://wx2.sinaimg.cn/large/663aa05agy1fvf37wijb0g20rb0r2q4t.gif" alt="xkcd: Python Environment"></p> <blockquote><p>↑ xkcd: Python Environment</p></blockquote> <h2 id="背景知识"><a href="#背景知识" aria-hidden="true" class="header-anchor">#</a> 背景知识</h2> <p>在进入主题之前，首先我们要区分 Pythpn 社区中几个名字非常类似的工具。这里推荐 <a href="https://stackoverflow.com/a/41573588/9426588" target="_blank" rel="noopener noreferrer">stackoverflow 上 Flimm 的回答<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>，讲的十分清楚了。摘抄翻译一下本文会讲到的几个工具：</p> <blockquote><ul><li>PyPI 中的非标准库
+<ul><li><strong><a href="https://pypi.python.org/pypi/virtualenv" target="_blank" rel="noopener noreferrer"><code>virtualenv</code><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></strong> 是一个非常流行的、用来创建虚拟环境的工具。如果你不熟悉这个工具，我强烈推荐你去学习一下，因为它真的非常有用。接下来的回答中我都会拿他进行对比。
+它的原理是在一个目录下（比如：<code>env/</code>）安装很多文件，然后在 <code>PATH</code> 环境变量的前面加上一个自定义的 <code>bin</code> 目录（比如：<code>env/bin</code>）。一个完整的 <code>python</code> 或者 <code>python3</code> 二进制文件会放入这个目录中，Python 被设计成先在相对它的路径处寻找库。它不是 Python 标准库的一部分，但是它隶属于 PyPA (Python Packaging Authority) 。激活了之后，你可以直接通过 pip 在虚拟环境中安装库。</li> <li><strong><a href="https://github.com/pyenv/pyenv" target="_blank" rel="noopener noreferrer"><code>pyenv</code><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></strong> 用来隔离 Python 版本。比如你可能想要在 Python 2.6、2.7、3.3、3.4 和 3.5 中测试你的代码，所以你需要一种在它们之间进行切换的方式。激活之后，它会在 PATH 前面加上 <code>~/.pyenv/shims</code>，这里储存了一些 Python 命令程序 (<code>python</code>, <code>pip</code>) 。这些文件不是从系统已有的 Python 中复制出来的，而是专门用来根据环境变量 <code>PYENV_VERSION</code>、<code>.python-version</code> 文件或者 <code>~/.pyenv/version</code> 文件来决定使用哪个 Python 版本。pyenv 也简化了下载和安装多个 Python 版本的步骤，使用 <code>pyenv install</code> 命令即可。</li> <li><strong><a href="https://pypi.python.org/pypi/pipenv" target="_blank" rel="noopener noreferrer"><code>pipenv</code><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></strong>, 由 Kenneth Reitz 编写 （<code>requests</code> 的作者）（国内也称作 K 神——译者注），是这个列表当中最新的一个项目。它将 <code>Pipfile</code>, <code>pip</code> 和 <code>virtualenv</code> 结合到同一个命令行命令。 <code>virtualenv</code> 目录一般放在 <code>~/.local/share/virtualenvs/XXX</code>, 其中的 <code>XXX</code> 是项目目录的 hash。这和 virtualenv 不一样，后者一般放到当前的工作目录。</li></ul></li> <li>标准库
+<ul><li><strong><a href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener noreferrer"><code>venv</code><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></strong> 是 Python 3 内置的一个包（从 Python 3.3 版开始——译者注）。你可以通过 <code>python3 -m venv</code> 来运行它。它的目标和实现方式都和 <code>virtualenv</code> 非常类似，只不过它不需要复制 Python 二进制文件（Windows 除外）。除非你要使用 Python2，不然你应该选择 <code>venv</code>。不过截止本文时，Python 社区更喜欢 <code>virtualenv</code> ，<code>venv</code> 并没有什么声音。</li></ul></li></ul></blockquote> <p><img src="https://ws3.sinaimg.cn/large/0069RVTdgy1fv5thb7akng30sg0fzhe9.gif" alt="venv 的心情如图"></p> <blockquote><p>↑ venv 的心情如图</p></blockquote> <h2 id="安装"><a href="#安装" aria-hidden="true" class="header-anchor">#</a> 安装</h2> <p>官方文章的 <a href="https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv" target="_blank" rel="noopener noreferrer">Installing Pipenv<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 一章有好几种安装的方式。在不是很重要的机器上（比如自己的开发机）可以直接使用 <code>pip install pipenv</code> 进行安装。但是如果在生产环境上安装，就需要其他方式。这里我介绍一下 <a href="https://pip.pypa.io/en/stable/user_guide/#user-installs" target="_blank" rel="noopener noreferrer">User Installs<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 的方式。这种方式虽然有点繁琐，但是胜在安全，不会影响已有的 Python 环境。</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token punctuation">[</span>superman@server ~ <span class="token punctuation">]</span>$ pip3 <span class="token function">install</span> --user pipenv
+    100% <span class="token operator">|</span>████████████████████████████████<span class="token operator">|</span> 5.0MB 314kB/s
+Successfully installed pipenv-2018.7.1
+<span class="token punctuation">[</span>superman@server ~ <span class="token punctuation">]</span>$ <span class="token function">which</span> pipenv
+pipenv not found
+</code></pre></div><p>注意此时由于没有修改 <code>PATH</code>（环境变量），所以还需要找到用户目录并修改并将下面的 <code>bin</code> 目录加入 <code>PATH</code> 中。</p> <p>在 Linux 和 macOS 下，用户目录可以使用 <code>python -m site --user-base</code> 命令获得：</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token punctuation">[</span>superman@server ~ <span class="token punctuation">]</span>$ python3 -m site --user-base
+/home/superman/.local
+<span class="token punctuation">[</span>superman@server ~ <span class="token punctuation">]</span>$ <span class="token function">export</span> PATH<span class="token operator">=</span><span class="token variable">$PATH</span><span class="token keyword">:</span><span class="token variable"><span class="token variable">$(</span>python3 -m site --user-base<span class="token variable">)</span></span>/bin
+<span class="token punctuation">[</span>superman@server ~ <span class="token punctuation">]</span>$ <span class="token function">which</span> pipenv
+/home/superman/.local/bin/pipenv
+</code></pre></div><p>为了方便起见，大家可以修改 <code>~/.profile</code> 或 <code>~/.bashrc</code> 或者类型的文件，加入上面设置 <code>PATH</code> 的语言，让 shell 在每次登录的时候自动设置 <code>PATH</code>。</p> <p>同时为了避免不同的工具链之间的相互影响，通过 User Install 方式安装的「工具链」（比如 virtualenv、pyenv 和 tox）要尽可能少。</p> <h2 id="基本用法"><a href="#基本用法" aria-hidden="true" class="header-anchor">#</a> 基本用法</h2> <p>使用 <code>pipenv install &lt;packagename&gt;</code> 安装包。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">cd</span> myproj
+$ pipenv <span class="token function">install</span> requests
+
+Using /usr/bin/python3 <span class="token punctuation">(</span>3.5.2<span class="token punctuation">)</span> to create virtualenv<span class="token punctuation">..</span>.
+Virtualenv location: /root/.local/share/virtualenvs/myproj-y53uuyLx
+Creating a Pipfile <span class="token keyword">for</span> this project<span class="token punctuation">..</span>
+Adding requests to Pipfile's <span class="token punctuation">[</span>packages<span class="token punctuation">]</span><span class="token punctuation">..</span>.
+Pipfile.lock not found, creating<span class="token punctuation">..</span>.
+Updated Pipfile.lock <span class="token punctuation">(</span>0b4483<span class="token punctuation">)</span><span class="token operator">!</span>
+Installing dependencies from Pipfile.lock <span class="token punctuation">(</span>0b4483<span class="token punctuation">)</span><span class="token punctuation">..</span>.
+</code></pre></div><p>在第一次执行 <code>pipenv install</code> 的时候，Pipenv 会做这么几件事情：</p> <ol><li>创建 virtualenv 环境</li> <li>创建 <code>Pipfile</code> 文件</li> <li>创建 <code>Pipfile.lock</code> 文件</li> <li>安装依赖</li></ol> <p>其他常用命令:</p> <ul><li><code>pipenv install</code>：安装 <code>Pipfile</code> 中 <code>[packages]</code> 下面的包</li> <li><code>pipenv install --dev</code>：安装 <code>Pipfile</code> 中 <code>[packages]</code> 和 <code>[dev-packages]</code> 下面的包</li> <li><code>pipenv install &lt;package&gt;</code>：在当前环境安装包，并将相关信息写入 <code>Pipfile</code> 的 <code>[packages]</code> 和 <code>Pipfile.lock</code></li> <li><code>pipenv install &lt;package&gt; --dev</code>：在当前环境安装包，并将相关信息写入 <code>Pipfile</code> 的 <code>[dev-packages]</code> 和 <code>Pipfile.lock</code></li> <li><code>pipenv uninstall &lt;package&gt;</code>: 在当前环境卸载包，并将相关信息从 <code>Pipfile</code> 和 <code>Pipfile.lock</code> 中移除</li> <li><code>pipenv lock</code>：确认 <code>Pipfile</code> 中所有包已安装，并根据安装版本生成 <code>Pipfile.lock</code></li> <li><code>pipenv --rm</code>：删除 virtualenv 环境</li> <li><code>pipenv --venv</code>：输出当前 virtualenv 环境的路径</li> <li><code>pipenv shell</code>：进入虚拟环境，类似 venv 和 virtualenv 的 <code>source ./venv/bin/activate</code></li> <li><code>pipenv run &lt;command&gt;</code>: 使用虚拟环境跑一些命令，比如 <code>pipenv run pip3 list</code></li></ul> <h2 id="pipenv-解决了哪些问题？"><a href="#pipenv-解决了哪些问题？" aria-hidden="true" class="header-anchor">#</a> Pipenv 解决了哪些问题？</h2> <h3 id="虚拟环境和-pip-不能同时使用"><a href="#虚拟环境和-pip-不能同时使用" aria-hidden="true" class="header-anchor">#</a> 虚拟环境和 pip 不能同时使用</h3> <p>venv 和 virtualenv 可以提供独立的 Python 环境，这是一个非常必要的功能。但是每次进入和退出环境都需要手动地执行命令，非常繁琐而且容易出错。</p> <p>举个例子，<code>projectA</code> 和 <code>projectB</code> 各有一个 venv 环境（位置是两个项目下的 <code>.venv</code> 目录），我想在两个 venv 环境中安装不同版本的库，正确的做法是下面这样的：</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">cd</span> projectA
+$ <span class="token keyword">.</span> .venv/bin/active
+<span class="token punctuation">(</span>venv<span class="token punctuation">)</span> $ pip3 <span class="token function">install</span> requests<span class="token operator">==</span>2.0  <span class="token comment"># 安装在 projectA/.venv/</span>
+<span class="token punctuation">(</span>venv<span class="token punctuation">)</span> $ <span class="token function">cd</span> <span class="token punctuation">..</span>/projectB
+<span class="token punctuation">(</span>venv<span class="token punctuation">)</span> $ <span class="token function">which</span> pip3
+/tmp/projectA/venv/bin/pip3
+<span class="token punctuation">(</span>venv<span class="token punctuation">)</span> $ deactive
+$ <span class="token keyword">.</span> .venv/bin/active
+<span class="token punctuation">(</span>venv<span class="token punctuation">)</span> $ pip3 <span class="token function">install</span> requests<span class="token operator">==</span>2.1  <span class="token comment"># 安装在 projectB/.venv/</span>
+</code></pre></div><p>可以看到，<strong>切换目录并不会自动地切换 venv 环境</strong>。这样不仅繁琐，而且容易造成失误，因为我可能没有注意到我所在的目录和使用的 venv/virtualenv 环境不同。</p> <p>使用 Pipenv 的话，就能解决这个问题了，这也是诸如 npm 等其他包管理器的行为。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">cd</span> projectA
+$ pipenv <span class="token function">install</span> requests<span class="token operator">==</span>2.0  <span class="token comment"># 安装在 ~/.local/share/virtualenvs/projectA-OOSnJKux/</span>
+$ <span class="token function">cd</span> <span class="token punctuation">..</span>/projectB
+$ pipenv <span class="token function">install</span> requests<span class="token operator">==</span>2.1  <span class="token comment"># 安装在 ~/.local/share/virtualenvs/projectB-XaGlAV6H/</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">cd</span> projectA
+$ <span class="token function">npm</span> <span class="token function">install</span> express-generator@4.0  <span class="token comment"># 安装在 projectA/node_modules/</span>
+$ <span class="token function">cd</span> <span class="token punctuation">..</span>/projectB
+$ <span class="token function">npm</span> <span class="token function">install</span> express-generator@4.2  <span class="token comment"># 安装在 projectB/node_modules/</span>
+</code></pre></div><p>扩展阅读：<a href="https://www.kennethreitz.org/essays/a-better-pip-workflow" target="_blank" rel="noopener noreferrer">A Better Pip Workflow™<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <h3 id="pip-不能精确地指定版本"><a href="#pip-不能精确地指定版本" aria-hidden="true" class="header-anchor">#</a> pip 不能精确地指定版本</h3> <p>今天在开发 Python 项目的时候，一般会使用一个 <code>requirements.txt</code> 文件来保存依赖信息，这也是标准的做法。而 <code>requirements.txt</code> 有两种使用方法：</p> <p>第一种方式，只保存顶级依赖：</p> <div class="language- extra-class"><pre class="language-text"><code>$ cat requirements.txt
+requests[security]
+flask
+gunicorn==19.4.5
+</code></pre></div><p>因为依赖及其子依赖版本并没有被固定下来，在执行 <code>pip install -r requirements.txt</code> 时会有不同的结果，可能会造成一些问题。</p> <p>第二种方式，</p> <div class="language- extra-class"><pre class="language-text"><code>$ cat requirements.txt
+cffi==1.5.2
+cryptography==1.2.2
+enum34==1.1.2
+Flask==0.10.1
+gunicorn==19.4.5
+idna==2.0
+ipaddress==1.0.16
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+ndg-httpsclient==0.4.0
+pyasn1==0.1.9
+pycparser==2.14
+pyOpenSSL==0.15.1
+requests==2.9.1
+six==1.10.0
+Werkzeug==0.11.4
+</code></pre></div><p>这种方式所有的依赖，包括项目的依赖、和依赖的依赖，而且每个依赖都精确到具体的版本，这也是当前 Python 社区的最佳实践。顺便一提这些信息可以使用 <code>pip freeze</code> 命令输出。但是使用这种方式，管理起来不方便，没有办法很好的分清楚哪些依赖是项目直接需要的，哪些依赖是子依赖。尤其是在升级依赖版本的时候，这种混乱会造成很多困难。</p> <p>Pipenv 的解决方案是 <code>Pipfile</code> 和 <code>Pipfile.lock</code> ，使用它们来替代老旧过时的 <code>requirements.txt</code></p> <h4 id="pipfile"><a href="#pipfile" aria-hidden="true" class="header-anchor">#</a> Pipfile</h4> <p><code>Pipfile</code> 使用了 <a href="https://github.com/toml-lang/toml" target="_blank" rel="noopener noreferrer">TOML<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 格式而不是 <code>requirements.txt</code> 的纯文本，其中储存了生产环境(<code>[packages]</code>)和开发环境(<code>[dev-packages]</code>)下所需要的顶级依赖。下面有个简单的例子</p> <div class="language-TOML extra-class"><pre class="language-toml"><code><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token table class-name">source</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token key property">url</span> <span class="token punctuation">=</span> <span class="token string">&quot;https://pypi.python.org/simple&quot;</span>
+<span class="token key property">verify_ssl</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">name</span> <span class="token punctuation">=</span> <span class="token string">&quot;pypi&quot;</span>
+
+<span class="token punctuation">[</span><span class="token table class-name">packages</span><span class="token punctuation">]</span>
+<span class="token key property">requests</span> <span class="token punctuation">=</span> <span class="token string">&quot;*&quot;</span>
+
+<span class="token punctuation">[</span><span class="token table class-name">dev-packages</span><span class="token punctuation">]</span>
+<span class="token key property">pytest</span> <span class="token punctuation">=</span> <span class="token string">&quot;*&quot;</span>
+</code></pre></div><h4 id="pipfile-lock"><a href="#pipfile-lock" aria-hidden="true" class="header-anchor">#</a> Pipfile.lock</h4> <p><code>Pipfile.lock</code> 实际上是一个 JSON 文件，保存着所有的依赖的版本和 hash 信息。这个文件应该提交到 git 仓库里（除非你同时面向多个 Python 版本开发），而且在任何情况下，都不应该手动地修改这个文件。</p> <p>一个 <code>Pipfile.lock</code> 文件的例子：</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+    <span class="token property">&quot;_meta&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;hash&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;sha256&quot;</span><span class="token operator">:</span> <span class="token string">&quot;8d14434df45e0ef884d6c3f6e8048ba72335637a8631cc44792f52fd20b6f97a&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;host-environment-markers&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;implementation_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;cpython&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;implementation_version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3.6.1&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;os_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;posix&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;platform_machine&quot;</span><span class="token operator">:</span> <span class="token string">&quot;x86_64&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;platform_python_implementation&quot;</span><span class="token operator">:</span> <span class="token string">&quot;CPython&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;platform_release&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16.7.0&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;platform_system&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Darwin&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;platform_version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Darwin Kernel Version 16.7.0: Thu Jun 15 17:36:27 PDT 2017; root:xnu-3789.70.16~2/RELEASE_X86_64&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;python_full_version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3.6.1&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;python_version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3.6&quot;</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;sys_platform&quot;</span><span class="token operator">:</span> <span class="token string">&quot;darwin&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;pipfile-spec&quot;</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;requires&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;sources&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span>
+                <span class="token property">&quot;name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;pypi&quot;</span><span class="token punctuation">,</span>
+                <span class="token property">&quot;url&quot;</span><span class="token operator">:</span> <span class="token string">&quot;https://pypi.python.org/simple&quot;</span><span class="token punctuation">,</span>
+                <span class="token property">&quot;verify_ssl&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;default&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;certifi&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:54a07c09c586b0e4c619f02a5e94e36619da8e2b053e20f594348c0611803704&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:40523d2efb60523e113b44602298f0960e900388cf3bb6043f645cf57ea9e3f5&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==2017.7.27.1&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;chardet&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==3.0.4&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;idna&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:8c7309c718f94b3a625cb648ace320157ad16ff131ae0af362c9f21b80ef6ec4&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==2.6&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;requests&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:6a1b267aa90cac58ac3a765d067950e7dbbf75b1da07e895d1f594193a40a38b&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:9c443e7324ba5b85070c4a818ade28bfabedf16ea10206da1132edaa6dda237e&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==2.18.4&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;urllib3&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:06330f386d6e4b195fbfc736b297f58c5a892e4440e54d294d7004e3a9bbea1b&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==1.22&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;develop&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;py&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:2ccb79b01769d99115aa600d7eed99f524bf752bba8f041dc1c184853514655a&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==1.4.34&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;pytest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">&quot;hashes&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;sha256:b84f554f8ddc23add65c411bf112b2d88e2489fd45f753b1cae5936358bdf314&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sha256:f46e49e0340a532764991c498244a60e3a37d7424a532b3ff1a6a7653f1a403a&quot;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;==3.2.2&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><code>Pipfile.lock</code> 默认使用 sha256 算法给每一个包进行 hash，这样可以保证在不安全的网络环境下也能下载到正确的包。</p> <p><code>Pipfile</code> 和 <code>Pipfile.lock</code> 都应该提交到版本库中。</p> <h2 id="pipenv-的其他特性"><a href="#pipenv-的其他特性" aria-hidden="true" class="header-anchor">#</a> Pipenv 的其他特性</h2> <h3 id="为什么-pipenv-使用-virtualenv-而不是标准库中的-venv？"><a href="#为什么-pipenv-使用-virtualenv-而不是标准库中的-venv？" aria-hidden="true" class="header-anchor">#</a> 为什么 Pipenv 使用 virtualenv 而不是标准库中的 venv？</h3> <p>根据<a href="https://github.com/pypa/pipenv/issues/15" target="_blank" rel="noopener noreferrer">这个 issue<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 中的讨论，Pipenv 不使用 venv 的原因有两个：一是 Kenneth Reitz 个人更喜欢 virtualenv，二是 Pipenv 用来管理 virtualenv 的库 <a href="https://github.com/berdario/pew/pull/173" target="_blank" rel="noopener noreferrer">Pew<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 目前<a href="https://github.com/berdario/pew/pull/173" target="_blank" rel="noopener noreferrer">还不支持 venv<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。</p> <h3 id="将-virtualenv-环境的位置改为工程目录下"><a href="#将-virtualenv-环境的位置改为工程目录下" aria-hidden="true" class="header-anchor">#</a> 将 virtualenv 环境的位置改为工程目录下</h3> <p>Pipenv 默认会将 virtualenv 目录创建在 <code>~/.local/share/virtualenvs/</code> 中，但是<a href="https://github.com/pypa/pipenv/issues/1382" target="_blank" rel="noopener noreferrer">很多人希望<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>可以将 virtualenv 目录放在工程目录下。Pipenv 也提供了相应的功能，只要将环境变量中 <code>PIPENV_VENV_IN_PROJECT</code> 的值设为 <code>true</code>，Pipenv 就会在工程目录下的 <code>.venv</code> 目录创建 virtualenv 环境。不过 Pipenv 也的确提供了足够的命令用来操作 virtualenv，所以不把 virtualenv 目录放在工程目录下也是可以接受的。</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ <span class="token function">export</span> PIPENV_VENV_IN_PROJECT<span class="token operator">=</span>true
+$ <span class="token function">cd</span> projectC
+$ pipenv <span class="token function">install</span>
+Creating a virtualenv <span class="token keyword">for</span> this project<span class="token punctuation">..</span>.
+Virtualenv location: /root/projectD/.venv
+$ pipenv --venv
+/root/projectC/.venv
+</code></pre></div><p>2019-02-13 更新：另外一个简单的办法是在项目根目录下手动创建 <code>.venv</code> 目录，然后再执行 <code>pipenv install</code>。Pipenv 会自动在工程目录下创建虚拟环境。</p> <h3 id="使用不同版本的-python-程序"><a href="#使用不同版本的-python-程序" aria-hidden="true" class="header-anchor">#</a> 使用不同版本的 python 程序</h3> <p>Pipfile 中有一个可选的 python_version 字段：</p> <div class="language- extra-class"><pre class="language-text"><code>[requires]
+python_version = &quot;3.7&quot;
+</code></pre></div><p>Pipenv 会自动地根据这个字段寻找相应的 Python 版本。如果找不到对应版本，而且安装了 pyenv 的情况下，Pipenv 还会询问你是否要使用 pyenv 安装特定版本的 Python，可以说是非常贴心了。</p> <div class="language- extra-class"><pre class="language-text"><code>$ pipenv install
+Warning: Python 3.7 was not found on your system...
+Would you like us to install CPython 3.7.0 with pyenv? [Y/n]: y
+Installing CPython 3.7.0 with pyenv (this may take a few minutes)...
+</code></pre></div><p><em>有空写一篇博客介绍一下 pyenv</em></p> <h3 id="自定义脚本快捷命令"><a href="#自定义脚本快捷命令" aria-hidden="true" class="header-anchor">#</a> 自定义脚本快捷命令</h3> <p>Pipenv 支持在 <code>Pipefile</code> 中的 <code>[scripts]</code> 表情内添加自定义的脚本命令，并通过 <code>pipenv run &lt;shortcut name&gt;</code> 的方式在 virtualenv 环境中执行对应的命令，哪怕在之前并没有手动地激活 virtualenv 环境。</p> <p>比如在 <code>Pipefile</code> 中添加下面的代码：</p> <div class="language- extra-class"><pre class="language-text"><code>[scripts]
+test = &quot;python3 -m unittest discover -s ./tests&quot;
+dev = &quot;python3 manage.py runserver 0.0.0.0:8000&quot;
+</code></pre></div><p>然后执行 <code>pipenv run test</code> 就相当于执行了 <code>pipenv run python3 -m unittest discover -s ./tests</code>，<code>pipenv run dev</code> 相当于 <code>pipenv run python3 manage.py runserver 0.0.0.0:8000</code>。非常方便的功能。</p> <h2 id="继续学习-pipenv"><a href="#继续学习-pipenv" aria-hidden="true" class="header-anchor">#</a> 继续学习 Pipenv</h2> <p>这篇文章只是一个简要的概述，如果大家希望能够深入了解 Pipenv，可以去看官网的 <a href="https://pipenv.readthedocs.io/en/latest/#further-documentation-guides" target="_blank" rel="noopener noreferrer">Further Documentation Guides<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 章节，应该可以覆盖绝大多数的使用场景了。</p> <h2 id="总结"><a href="#总结" aria-hidden="true" class="header-anchor">#</a> 总结</h2> <p>虽然 virtualenv 不是 Pipenv 发明的，Pipfile 也不是它第一个使用的。但是 Pipenv 能把这些工具集合在一起，再加上极其人性化的设计，是解决 Python 包管理问题的不二之选。Pipenv 完全能配得上 Python 官方给他的褒奖和推荐，推荐大家亲自去使用和感受。</p> <hr> <p><img src="https://i.creativecommons.org/l/by-nc-nd/2.5/cn/88x31.png" alt="知识共享协议"></p> <p>本文采用<a href="http://creativecommons.org/licenses/by-nc-nd/2.5/cn/" target="_blank" rel="noopener noreferrer">知识共享署名-非商业性使用-禁止演绎 2.5 中国大陆许可协议<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>进行许可。</p></div></div></div></main> <footer class="app__footer">
+        Power by <a href="https://github.com/ocavue/vuepress-theme-blogue" class="app__footer-link">Blogue</a></footer> <!----></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3390545e.js" defer></script><script src="/assets/js/7.4335dcfb.js" defer></script><script src="/assets/js/15.07692fc6.js" defer></script>
+  </body>
+</html>

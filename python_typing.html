@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Python 中的类型标注 | Ocavue&#39;s Blog</title>
+    <meta name="description" content="Just playing around">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.c77a0a89.css" as="style"><link rel="preload" href="/assets/js/app.3390545e.js" as="script"><link rel="preload" href="/assets/js/7.4335dcfb.js" as="script"><link rel="preload" href="/assets/js/16.0fd9f730.js" as="script"><link rel="prefetch" href="/assets/js/10.3cc39aa1.js"><link rel="prefetch" href="/assets/js/11.ac7ff37e.js"><link rel="prefetch" href="/assets/js/12.6f0b04a4.js"><link rel="prefetch" href="/assets/js/13.8586ab88.js"><link rel="prefetch" href="/assets/js/14.2c8898b5.js"><link rel="prefetch" href="/assets/js/15.07692fc6.js"><link rel="prefetch" href="/assets/js/17.62e65e2b.js"><link rel="prefetch" href="/assets/js/18.56cc483b.js"><link rel="prefetch" href="/assets/js/2.cdefbf3e.js"><link rel="prefetch" href="/assets/js/3.b05d599e.js"><link rel="prefetch" href="/assets/js/4.e52bb422.js"><link rel="prefetch" href="/assets/js/5.13d50fda.js"><link rel="prefetch" href="/assets/js/6.5bab4f56.js"><link rel="prefetch" href="/assets/js/8.da20465b.js"><link rel="prefetch" href="/assets/js/9.cc10bcad.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.c77a0a89.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="root"><span class="cover" data-v-1164ecfe></span> <div class="sidebar" data-v-cf3bad4a><div class="sidebar__header" data-v-cf3bad4a><a href="/about.html" class="sidebar__header-avatar" style="background-image:url(https://ws1.sinaimg.cn/large/006tNc79gy1fom9qicqcej30e80e83zo.jpg);" data-v-cf3bad4a></a></div> <nav class="sidebar__nav" data-v-cf3bad4a><a href="/" class="sidebar__nav-item router-link-active" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-home" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>HOME</span></a> <a href="/about.html" class="sidebar__nav-item" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-face" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>ABOUT</span></a> <a href="/tag/" class="sidebar__nav-item" data-v-cf3bad4a><span class="sidebar__nav-item-icon icon-tag" data-v-cf3bad4a></span> <span class="sidebar__nav-item-content" data-v-cf3bad4a>TAGS</span></a></nav></div> <div class="toc" data-v-ea388812><a href="#python-type-hints-的进化" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        Python type hints 的进化
+    </a><a href="#python-3-0-function-annotation" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Python 3.0: function annotation
+    </a><a href="#python-3-5-typing" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Python 3.5: typing
+    </a><a href="#typing-高级用法" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        typing 高级用法
+    </a><a href="#union" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Union
+    </a><a href="#callable" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Callable
+    </a><a href="#any" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Any
+    </a><a href="#python-3-6-variable-annotations" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Python 3.6: variable annotations
+    </a><a href="#python-3-7-dataclass" class="toc__item" style="padding-left:32px;" data-v-ea388812>
+        Python 3.7: dataclass
+    </a><a href="#格式" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        格式
+    </a><a href="#其他好处：ide" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        其他好处：IDE
+    </a><a href="#python-typing-不能做什么" class="toc__item" style="padding-left:16px;" data-v-ea388812>
+        python typing 不能做什么
+    </a></div> <header class="toolbar" data-v-5fd7a81e><span class="toolbar__button icon-menu" data-v-5fd7a81e></span> <a href="/" class="toolbar__item router-link-active" data-v-5fd7a81e>
+        Ocavue's Blog
+    </a> <span style="flex: 1;" data-v-5fd7a81e></span> <span class="toolbar__button icon-toc" data-v-5fd7a81e></span></header> <main class="app__main"><div class="post" data-v-a962948a><a href="/python_typing.html" class="router-link-exact-active router-link-active post__img post__img--nolink" style="background-image:linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.60) 100%), url('https://i.loli.net/2019/05/06/5ccfe8acc51bc.jpg');" data-v-a962948a><span class="post__img-title" data-v-a962948a>
+            Python 中的类型标注
+        </span> <span class="post__img-info" data-v-a962948a><span data-v-a962948a>2018-12-31</span></span></a> <div class="post__content markdown-body" data-v-a962948a><div class="content default"><p>静态语言与动态语言孰优孰劣一直是网络上争论不休的话题。在这篇论文中（<a href="https://cacm.acm.org/magazines/2017/10/221326-a-large-scale-study-of-programming-languages-and-code-quality-in-github/abstract" target="_blank" rel="noopener noreferrer">英文原文<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>，<a href="https://www.zcfy.cc/article/a-large-scale-study-of-programming-languages-and-code-quality-in-github" target="_blank" rel="noopener noreferrer">中文翻译<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>），研究者通过统计 GitHub 上的不同语言的热门项目，的确得出了静态语言比动态语言更好维护的结论。</p> <p>如果我们想同时拥有静态语言的严谨和动态语言的自由，一方面就是让静态语言更动态，比如 Java 10 中新的 <code>var</code> 关键字；另一方面当然就是让动态语言变得更加静态，这篇文章的主角：Python type hints。</p> <h2 id="python-type-hints-的进化"><a href="#python-type-hints-的进化" aria-hidden="true" class="header-anchor">#</a> Python type hints 的进化</h2> <h3 id="python-3-0-function-annotation"><a href="#python-3-0-function-annotation" aria-hidden="true" class="header-anchor">#</a> Python 3.0: function annotation</h3> <p>在 Python 中，我们可以写这么一个函数</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">plus</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> a <span class="token operator">+</span> b
+</code></pre></div><p>如果我想要声明这个函数参数和返回值的类型，可以使用下面的写法：</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">plus</span><span class="token punctuation">(</span>a<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span> b<span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">int</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> a <span class="token operator">+</span> b
+</code></pre></div><p>这就是被称为 <strong>function annotation</strong> 的写法。使用冒号 <code>:</code> 加类型名来代表参数的类型，使用箭头 <code>-&gt;</code> 加类型表示返回值的类型。理解这种写法的关键就是，把高亮的部分都忽略，这些高亮的部分都不会被 Python 解析器所解析。你只需要把搞两部分忽略，就能看到熟悉的 Python 函数语法。</p> <p><img src="https://i.loli.net/2019/05/06/5ccfe8af55408.jpg" alt="hight light function annotation"></p> <p>Python 解释器在运行时并不会检查类型，所以哪怕参数的类型不对，Python 解释器也不会因此抛出任何异常。</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token comment"># example.py</span>
+<span class="token keyword">def</span> <span class="token function">plus</span><span class="token punctuation">(</span>a<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span> b<span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">int</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> a <span class="token operator">+</span> b
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>plus<span class="token punctuation">(</span><span class="token string">&quot;hello &quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;world!&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>$ python3 example.py
+hello world<span class="token operator">!</span>
+</code></pre></div><p>为了能够检查出类型的错误，我们还需要一些额外的静态检查工具。比如 Python 官方维护的 <a href="https://github.com/python/mypy" target="_blank" rel="noopener noreferrer">mypy<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 和 facebook 维护的 <a href="https://github.com/facebook/pyre-check" target="_blank" rel="noopener noreferrer">pyre<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。在开发的过程中，我们可以使用这类工具扫描代码，提前发现代码中的 bug，和其他语言的编译过程异曲同工。这篇文章会使用 mypy 作为例子，毕竟 Python type hints 的很多语法都继承自 mypy。</p> <p>首先安装 mypy:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ pip3 <span class="token function">install</span> mypy
+</code></pre></div><p>然后使用 mypy 对上面的文件进行检查：</p> <div class="language- extra-class"><pre class="language-text"><code>$ mypy example.py
+example.py:5: error: Argument 2 to &quot;exp&quot; has incompatible type &quot;str&quot;; expected &quot;int&quot;
+</code></pre></div><p>除了内置的类型之外，Python 语法也支持用户创建的类</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> <span class="token punctuation">.</span>mypackage <span class="token keyword">import</span> Bar
+
+<span class="token keyword">def</span> <span class="token function">f</span><span class="token punctuation">(</span>bar<span class="token punctuation">:</span> Bar<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>bar<span class="token punctuation">.</span>bar_method<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre></div><p>不管你们相不相信，这种写法在 python3.0 中就已经被支持了（<a href="https://www.python.org/dev/peps/pep-3107/" target="_blank" rel="noopener noreferrer">PEP 3107<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>）。</p> <div class="language- extra-class"><pre class="language-text"><code>$ pyenv local python3.0.1; python
+Python 3.0.1 (r301:69556, May 24 2018, 14:39:16)
+
+&gt;&gt;&gt; def f(a: int, b: str): pass
+...
+&gt;&gt;&gt;
+</code></pre></div><p>但是 Pyhton3 诞生这么多年，我印象中使用 Python type hints 语法的项目寥寥无几，除了对 Python 2.7 的兼容性外，另一个可能的原因是这套语法的功能还不够强大。在后来的 Python 版本中其语法也进行了不断的增强。</p> <h3 id="python-3-5-typing"><a href="#python-3-5-typing" aria-hidden="true" class="header-anchor">#</a> Python 3.5: typing</h3> <hr> <p>在 python3.5 中，引入了 <code>typing</code> 模块，现在我们可以表示嵌套结构了</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span> List
+
+<span class="token keyword">def</span> <span class="token function">best_students</span><span class="token punctuation">(</span>scores<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>name<span class="token punctuation">:</span> score <span class="token keyword">for</span> name<span class="token punctuation">,</span> score <span class="token keyword">in</span> scores<span class="token punctuation">.</span>items <span class="token keyword">if</span> score <span class="token operator">&gt;=</span> <span class="token number">90</span><span class="token punctuation">}</span>
+</code></pre></div><p><code>Dict[str, int]</code> 表示一个 keys 的类型为 str，values 的类型为 int 的字典，比如 <code>{&quot;a&quot;: 1, &quot;b&quot;: 2}</code></p> <p><code>List[int]</code> 表示由整型组成的列表，比如<code>[0, 1, 1, 2, 3]</code></p> <p>基于 typing 提供的类型，我们可以写出相当复杂的嵌套结构：</p> <p><code>Dict[str, Dict[str, List[str]]]</code></p> <div class="language- extra-class"><pre class="language-text"><code>{
+	'原木镇': {
+        '第一小学': ['张伟', '王伟', '王芳'],
+        '第二小学': ['李伟', '李娜'],
+	},
+	'鸽子镇': {
+        '高山中学': ['张敏', '李静'],
+        '亿百中学': ['王静']
+        '蟒蛇小学': ['刘伟', '王秀英']
+	}
+}
+</code></pre></div><p>由于 <code>typing</code> 模块并没有对 python 本身的语法作出修改，所以低于 3.5 的 python 版本也可以通过安装 pip 库 <a href="https://pypi.org/project/typing/" target="_blank" rel="noopener noreferrer">typing<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> 来获得这个功能。</p> <p>另外一个有趣的事情是，<code>typing</code> 使用方括号 <code>List[str]</code> 而不是圆括号 <code>List(str)</code>。如果你使用了后面的方法的话，mypy 会提醒你 <code>Suggestion: use List[...] instead of List(...)</code>。</p> <h2 id="typing-高级用法"><a href="#typing-高级用法" aria-hidden="true" class="header-anchor">#</a> typing 高级用法</h2> <h3 id="union"><a href="#union" aria-hidden="true" class="header-anchor">#</a> Union</h3> <p>有时候我们的参数、返回值（以及下面会谈到的变量）并不只有一种类型，这种情况下我们就可以使用 <code>Union</code> 对不同的类型进行或操作：</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> typing <span class="token keyword">import</span> Union<span class="token punctuation">,</span> List
+
+<span class="token keyword">def</span> <span class="token function">get_first_name</span><span class="token punctuation">(</span>names<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> Union<span class="token punctuation">[</span><span class="token boolean">None</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>names<span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token number">1</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> names<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span>
+</code></pre></div><p>上面这个函数的返回值可能是 <code>None</code>，也可能是一个字符串</p> <h3 id="callable"><a href="#callable" aria-hidden="true" class="header-anchor">#</a> Callable</h3> <p>Python 中万物皆是对象，函数也是对象。<code>Callable</code> 就可以表示函数类型。</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable
+
+<span class="token keyword">def</span> <span class="token function">get_regex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> Callable<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">bool</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">regex</span><span class="token punctuation">(</span>pattern<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> string<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">bool</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> re
+    <span class="token keyword">return</span> regex<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+</code></pre></div><p>在上面的例子中，<code>get_regex</code> 函数返回一个 <code>Callable</code> 对象。这个对象接受两个位置参数，类型分别是 <code>str</code> 和 <code>str</code>。它的返回值的类型是 <code>bool</code>。</p> <p>不过 Callable 不能表示位置参数，在下面我还会详细地谈到这个问题。</p> <h3 id="any"><a href="#any" aria-hidden="true" class="header-anchor">#</a> Any</h3> <p>无论如何，Python 的类型注解系统总是无法表达所有的类型</p> <p>Python 总有一些我们很难表达的形式或者类型。这种情况下我就能使用 <code>typing.Any</code>，它代表任何东西。比如说</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> typing <span class="token keyword">import</span> Any
+
+<span class="token keyword">def</span> <span class="token function">log</span><span class="token punctuation">(</span>msg<span class="token punctuation">:</span> Any<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>Any<span class="token punctuation">)</span>
+</code></pre></div><h3 id="python-3-6-variable-annotations"><a href="#python-3-6-variable-annotations" aria-hidden="true" class="header-anchor">#</a> Python 3.6: variable annotations</h3> <p>在 python3.6 中，除了函数的参数和返回值外，变量也可以表示类型了（<a href="https://www.python.org/dev/peps/pep-0526/" target="_blank" rel="noopener noreferrer">PEP 526<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>）</p> <div class="language-python extra-class"><pre class="language-python"><code>items<span class="token punctuation">:</span> <span class="token builtin">list</span> <span class="token operator">=</span> read_json_file<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div><div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">Employee</span><span class="token punctuation">(</span>NamedTuple<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    name<span class="token punctuation">:</span> <span class="token builtin">str</span>
+    <span class="token builtin">id</span><span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">3</span>
+</code></pre></div><p>通过这种形式，我们可以实现“先声明，后赋值”的写法。而这种特性就是 Python 3.7 的 dataclass 的基础。</p> <h3 id="python-3-7-dataclass"><a href="#python-3-7-dataclass" aria-hidden="true" class="header-anchor">#</a> Python 3.7: dataclass</h3> <p>我在上面说过，python 解析器并不会在意类型注解，严格来说这是不对的，Python 会把类型信息放在 <code>__annotations__</code> 属性中：</p> <div class="language- extra-class"><pre class="language-text"><code>&gt;&gt;&gt; def foo(a: str):
+...     print('hello', a)
+...
+
+&gt;&gt;&gt; foo.__annotations__
+{'a': str}
+
+&gt;&gt;&gt; class Bar:
+...     a: str
+...     b: int
+
+&gt;&gt;&gt; Bar.__annotations__
+{'a': str, 'b': int}
+</code></pre></div><p>所以在 python 中，类型信息是可以被获取到并被加以利用的。在过去，我们会这么写一个类：</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> typing <span class="token keyword">import</span> Tuple
+
+<span class="token keyword">class</span> <span class="token class-name">Bar</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>
+        self<span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> size<span class="token punctuation">:</span> <span class="token builtin">float</span><span class="token punctuation">,</span> phone<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span> location<span class="token punctuation">:</span> Tuple<span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">]</span>
+    <span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> name
+        self<span class="token punctuation">.</span>size <span class="token operator">=</span> size
+        self<span class="token punctuation">.</span>phone <span class="token operator">=</span> phone
+        self<span class="token punctuation">.</span>location <span class="token operator">=</span> location
+</code></pre></div><p>但是在 python3.7 中，我们可以利用新的 dataclass 大幅简化这类语法：</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">from</span> dataclasses <span class="token keyword">import</span> dataclass
+<span class="token keyword">from</span> typing <span class="token keyword">import</span> Tuple
+
+<span class="token keyword">class</span> <span class="token class-name">Bar</span><span class="token punctuation">(</span>dataclass<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    name<span class="token punctuation">:</span> <span class="token builtin">str</span>
+    size<span class="token punctuation">:</span> <span class="token builtin">float</span>
+    phone<span class="token punctuation">:</span> <span class="token builtin">int</span>
+    location<span class="token punctuation">:</span> Tuple<span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">]</span>
+</code></pre></div><p>dataclass 作为一个例子，展示了 Python 的 type hints 的潜力。</p> <h2 id="格式"><a href="#格式" aria-hidden="true" class="header-anchor">#</a> 格式</h2> <h2 id="其他好处：ide"><a href="#其他好处：ide" aria-hidden="true" class="header-anchor">#</a> 其他好处：IDE</h2> <h2 id="python-typing-不能做什么"><a href="#python-typing-不能做什么" aria-hidden="true" class="header-anchor">#</a> python typing 不能做什么</h2> <p>相比于 typescript 之于 javascript，python typing 的语法改动非常有限。这也导致了 Python 的类型检查并不能够覆盖所有的情况，比如说关键字参数：</p> <blockquote><p>There is no syntax to indicate optional or keyword arguments; such function types are rarely used as callback types. <code>Callable[..., ReturnType]</code> (literal ellipsis) can be used to type hint a callable taking any number of arguments and returning <code>ReturnType</code>.</p> <p>——<a href="https://docs.python.org/3.7/library/typing.html#typing.Callable" target="_blank" rel="noopener noreferrer">python typing 官方文档<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p></blockquote> <p>下面这个</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">foo</span><span class="token punctuation">(</span>item<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>item <span class="token operator">+</span> <span class="token string">&quot;s&quot;</span><span class="token punctuation">)</span>
+
+
+foo<span class="token punctuation">(</span>item<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+</code></pre></div><p>对于这个错误，mypy 可以检查出来：</p> <div class="language-bash extra-class"><pre class="language-bash"><code>$ mypy example.py
+example.py:5: error: Argument <span class="token string">&quot;item&quot;</span> to <span class="token string">&quot;foo&quot;</span> has incompatible <span class="token function">type</span> <span class="token string">&quot;int&quot;</span><span class="token punctuation">;</span> expected <span class="token string">&quot;str&quot;</span>
+</code></pre></div><p>但是只要加上一个装饰器，哪怕这个装饰器并没有改变参数和返回值的类型，由于 Python 语法的限制，我们无法精确地声明被装饰后的函数的关键字参数类型，于是 mypy 就检查不出这个错误了：</p> <div class="language-python extra-class"><pre class="language-python"><code><span class="token keyword">import</span> time
+<span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable
+
+
+<span class="token keyword">def</span> <span class="token function">foo_timer</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> Callable<span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> <span class="token boolean">None</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> __debug__<span class="token punctuation">:</span>
+
+        <span class="token keyword">def</span> <span class="token function">new_func</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            start <span class="token operator">=</span> time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            result <span class="token operator">=</span> func<span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> start<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> result
+
+        <span class="token keyword">return</span> new_func
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> func
+
+
+@foo_timer
+<span class="token keyword">def</span> <span class="token function">foo</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">,</span> item<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>item <span class="token operator">+</span> <span class="token string">&quot;s&quot;</span><span class="token punctuation">)</span>
+
+
+foo<span class="token punctuation">(</span>item<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+</code></pre></div><div class="language-bash extra-class"><pre class="language-bash"><code>$ mypy example.py
+$
+</code></pre></div><p>我可不是在钻牛角尖，我在某个项目中大量使用到了装饰器配合关键字参数的写法，结果 mypy 对这种情况的静态检查根本无能为力，让我又回到了以前只有在 runtime 时才能暴露问题的时代。</p> <p>同样是对动态语言的类型检查，相比于 typescript 对 javascript 语法的重新设计，Python 选择了尽可能兼容原来的写法，方便上手的同时，距离真正的静态语言还有着相当多的进步空间。</p></div></div></div></main> <footer class="app__footer">
+        Power by <a href="https://github.com/ocavue/vuepress-theme-blogue" class="app__footer-link">Blogue</a></footer> <!----></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.3390545e.js" defer></script><script src="/assets/js/7.4335dcfb.js" defer></script><script src="/assets/js/16.0fd9f730.js" defer></script>
+  </body>
+</html>
