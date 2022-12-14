@@ -1,0 +1,7 @@
+disallow: /resume/*
+disallow: /resume_en/*
+disallow: /resume/
+disallow: /resume_en/
+disallow: /resume
+disallow: /resume_en
+disallow: /download/
