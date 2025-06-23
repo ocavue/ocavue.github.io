@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/jsonschema/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/jsonschema/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/jsonschema/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>格式校验利器：JSON Schema 简介</h1> <span class="opacity-50 text-base"> <time datetime="2018-07-23T00:00:00.000Z"> Jul 23, 2018 </time> </span> <div class="pt-10"> <h2 id="json-是什么">JSON 是什么</h2>
+<p><strong>JSON</strong>，全称 <strong>J</strong>ava<strong>S</strong>cript <strong>O</strong>bject <strong>N</strong>otation. 是 JS 的数据结构的子集。相信大家对 JSON 也非常熟悉了。JSON 一共只有六种数据结构，这里列举他们在 JS 和 Python 中的叫法以及在 JSON 中的例子：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>JS</th><th>Python3</th><th>JSON</th></tr></thead><tbody><tr><td>string</td><td>string</td><td><code>"ABC"</code></td></tr><tr><td>number</td><td>int/float</td><td><code>123</code> <code>-1.23</code></td></tr><tr><td>boolean</td><td>bool</td><td><code>true</code> <code>false</code></td></tr><tr><td>null</td><td>None</td><td><code>null</code></td></tr><tr><td>object</td><td>dictnu</td><td><code>{"key": "value"}</code></td></tr><tr><td>array</td><td>list</td><td><code>["ABC", 123, true]</code></td></tr></tbody></table>
+<p>由于 JSON 是 JS 语法的子集，所以下文中我都会使用 JS 的称呼。</p>
+<p>得益于 JSON 极致的简单<del>和 JS 的广泛使用</del>，JSON 很快流行了起来。但是简单也有简单的坏处，人们逐渐发现 JSON 缺少一些必要的功。</p>
+<h2 id="json-schema-是什么">JSON Schema 是什么？</h2>
+<p>当前后端使用 JSON 通信的时候，双方需要验证 JSON 的数据格式，比如验证 array 的长度、number 的大小、甚至于类似 object 中有某两个属性不能并存等等要求。当然这些规则都可以使用代码进行验证，但是这样写起来太繁琐了，所以为了<strong>描述并校验 JSON 的格式</strong>，JSON Schema 诞生了。</p>
+<p>这里有一个非常简单的 JSON Schema 的例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "$schema"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"http://json-schema.org/draft-04/schema#"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"object"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "properties"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "name"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"string"</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#79B8FF">    "email"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"string"</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#79B8FF">    "age"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"integer"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "minimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "exclusiveMinimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "telephone"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"string"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "pattern"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^(</span><span style="color:#79B8FF">\\</span><span style="color:#9ECBFF">([0-9]{3}</span><span style="color:#79B8FF">\\</span><span style="color:#9ECBFF">))?[0-9]{3}-[0-9]{4}$"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "required"</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">"name"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"email"</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#79B8FF">  "additionalProperties"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>上面这个 JSON 描述了这样的一个 JSON：</p>
+<ul>
+<li>类型是 object</li>
+<li>有四个属性：
+<ul>
+<li>name：
+<ul>
+<li>类型为 string</li>
+</ul>
+</li>
+<li>email：
+<ul>
+<li>类型为 string</li>
+</ul>
+</li>
+<li>Age：
+<ul>
+<li>类型为整数</li>
+<li>这个整数要大于等于 0</li>
+</ul>
+</li>
+<li>telephone：
+<ul>
+<li>类型为 string</li>
+<li>需要符合这个正则表达式</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>上面这四个属性中必须出现有的 name 和 email，剩下的两个是可选的</li>
+<li>除了这四个属性外，不允许出现其他属性</li>
+</ul>
+<p>比如说，这样的一个 JSON 就符合这些要求：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Sherlock Holmes"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "email"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"sherlock@gmail.com"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "age"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">164</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>可以看到，JSON Schema 本身也是一个 JSON。同一个 JSON，<del>同一个世界</del>前后端都能看懂，那么的话这个 JSON Schema 就既可以作为执行代码，又可以作为文档。这种统一确保了代码和文档不会脱节，省去了写文档的功夫。毕竟程序员最讨厌的就是没有文档的代码和写文档了。</p>
+<h2 id="understanding-json-schema">Understanding JSON Schema</h2>
+<p>在这里，<strong>我强烈推荐阅读 <a href="https://spacetelescope.github.io/understanding-json-schema/#understanding-json-schema">Understanding JSON Schema</a></strong>，以至于我要专门写一章来介绍它。这是一个非常适合初学者的教程，有着及其清晰的例子。虽然截止写稿时其版本还停留在 draft-04，不过瑕不掩瑜，依然是我心中最优秀的 JSON Schema 教程。</p>
+<p>在这里列一下 Understanding JSON Schema 的大纲，方便查漏补缺：</p>
+<ul>
+<li>Type-specific keywords
+<ul>
+<li><code>string</code>
+<ul>
+<li><code>minLength</code></li>
+<li><code>maxLength</code></li>
+<li><code>pattern</code></li>
+</ul>
+</li>
+<li>Numeric types
+<ul>
+<li>types: <code>integer</code>, <code>number</code></li>
+<li><code>multipleOf</code></li>
+<li>range: <code>minimum</code>, <code>exclusiveMinimum</code>, <code>maximum</code>, <code>exclusiveMaximum</code></li>
+</ul>
+</li>
+<li><code>object</code>
+<ul>
+<li><code>properties</code></li>
+<li><code>additionalProperties</code></li>
+<li><code>required</code></li>
+<li>size: <code>minProperties</code>, <code>maxProperties</code></li>
+<li><code>dependencies</code></li>
+<li><code>patternProperties</code></li>
+</ul>
+</li>
+<li><code>array</code>
+<ul>
+<li><code>items</code></li>
+<li>length: <code>minItems</code>, <code>maxItems</code></li>
+<li><code>uniqueItems</code></li>
+</ul>
+</li>
+<li><code>boolean</code></li>
+<li><code>null</code></li>
+</ul>
+</li>
+<li>Generic keywords
+<ul>
+<li>Metadata: <code>title</code>, <code>description</code>, <code>default</code></li>
+<li>Enumerated values: <code>enum</code></li>
+</ul>
+</li>
+<li>Combining schemas
+<ul>
+<li><code>allOf</code></li>
+<li><code>anyOf</code></li>
+<li><code>oneOf</code></li>
+<li><code>not</code></li>
+</ul>
+</li>
+<li>The <code>$schema</code> keyword</li>
+<li>Regular Expressions</li>
+</ul>
+<h2 id="版本">版本</h2>
+<p>截止到今天，JSON Schema 一共有 7 个版本，最新的是 draft-07。不同版本之间并不（完全）兼容，所以最佳实践是在写 JSON Schema 的时候使用 <code>$schema</code> 关键字标记当前使用的是哪个规范。</p>
+<p>下面举个例子，展示了 draft-04 和 draft-06 中「大于」和「大于等于」写法：</p>
+<p>大于：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "$schema"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://json-schema.org/draft-06/schema#"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"number"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "exclusiveMinimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "$schema"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://json-schema.org/draft-04/schema#"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"number"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "minimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "exclusiveMinimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>大于等于：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "$schema"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://json-schema.org/draft-06/schema#"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"number"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "minimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "$schema"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://json-schema.org/draft-04/schema#"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"number"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "minimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "exclusiveMinimum"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><em>注：在 draft-04 中，<code>exclusiveMinimum</code> 的默认值就是 <code>false</code>，所以可以不写。</em></p>
+<p>在 draft-04 中，<code>exclusiveMinimum</code> 的值是 <code>boolean</code>，draft-06 中改成了 <code>number</code>。在相同含义的情况下，新版的写法的确更加简洁。</p>
+<p>关于不同版本之间的区别可以查看官网的 <a href="http://json-schema.org/specification.html#migrating-from-older-drafts">Migrating from older drafts</a> 一节。</p>
+<h2 id="总结">总结</h2>
+<p>JSON Schema 作为一个验证 JSON 的通用语法，我认为它成功完成了自己的任务。虽然有一些诸如可读性不高，写法繁琐的缺点，但是我认为这些都是必要的妥协。</p>
+<p>欢迎大家去<a href="https://juejin.im/post/5b5533e3e51d45195c0747b8">掘金</a>评论本文。</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="32" cy="32" r="30.5" transform="matrix(1 0 0 -1 0 64)" fill="#292B2D" stroke="url(#paint0_angular_4_8)" stroke-width="3"/>
+<path d="M21 42H35V39H21.0006L21 42Z" fill="white"/>
+<path d="M7 37L21 33V29L7 25V28L17.5 31L7 34V37Z" fill="white"/>
+<path d="M49 37L35 33V29L49 25V28L38.5 31L49 34V37Z" fill="white"/>
+<defs>
+<radialGradient id="paint0_angular_4_8" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 32) rotate(145.125) scale(20.1122)">
+<stop offset="0.078125" stop-color="#FF0000"/>
+<stop offset="0.270833" stop-color="#FFF500" stop-opacity="0.8125"/>
+<stop offset="0.421875" stop-color="#00FF0A"/>
+<stop offset="0.578125" stop-color="#00FFC2"/>
+<stop offset="0.739583" stop-color="#0038FF"/>
+<stop offset="0.884503" stop-color="#FF00E5"/>
+</radialGradient>
+</defs>
+</svg>

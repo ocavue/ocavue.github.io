@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/python-typing/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/python-typing/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/python-typing/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>Python 中的类型标注</h1> <span class="opacity-50 text-base"> <time datetime="2018-12-31T00:00:00.000Z"> Dec 31, 2018 </time> </span> <div class="pt-10"> <p>静态语言与动态语言孰优孰劣一直是网络上争论不休的话题。在这篇论文中（<a href="https://cacm.acm.org/magazines/2017/10/221326-a-large-scale-study-of-programming-languages-and-code-quality-in-github/abstract">英文原文</a>，<a href="https://www.zcfy.cc/article/a-large-scale-study-of-programming-languages-and-code-quality-in-github">中文翻译</a>），研究者通过统计 GitHub 上的不同语言的热门项目，的确得出了静态语言比动态语言更好维护的结论。</p>
+<p>如果我们想同时拥有静态语言的严谨和动态语言的自由，一方面就是让静态语言更动态，比如 Java 10 中新的 <code>var</code> 关键字；另一方面当然就是让动态语言变得更加静态，这篇文章的主角：Python type hints。</p>
+<h2 id="python-type-hints-的进化">Python type hints 的进化</h2>
+<h3 id="python-30-function-annotation">Python 3.0: function annotation</h3>
+<p>在 Python 中，我们可以写这么一个函数</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> plus</span><span style="color:#E1E4E8">(a, b</span><span style="color:#F97583">=</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> a </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> b</span></span>
+<span class="line"></span></code></pre>
+<p>如果我想要声明这个函数参数和返回值的类型，可以使用下面的写法：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> plus</span><span style="color:#E1E4E8">(a: </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">, b: </span><span style="color:#79B8FF">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">) -> </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> a </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> b</span></span>
+<span class="line"></span></code></pre>
+<p>这就是被称为 <strong>function annotation</strong> 的写法。使用冒号 <code>:</code> 加类型名来代表参数的类型，使用箭头 <code>-></code> 加类型表示返回值的类型。理解这种写法的关键就是，把高亮的部分都忽略，这些高亮的部分都不会被 Python 解析器所解析。你只需要把搞两部分忽略，就能看到熟悉的 Python 函数语法。</p>
+<p><img src="https://i.loli.net/2019/05/06/5ccfe8af55408.jpg" alt="hight light function annotation"></p>
+<p>Python 解释器在运行时并不会检查类型，所以哪怕参数的类型不对，Python 解释器也不会因此抛出任何异常。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># example.py</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> plus</span><span style="color:#E1E4E8">(a: </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">, b: </span><span style="color:#79B8FF">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">) -> </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> a </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> b</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(plus(</span><span style="color:#9ECBFF">"hello "</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"world!"</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> python3</span><span style="color:#9ECBFF"> example.py</span></span>
+<span class="line"><span style="color:#B392F0">hello</span><span style="color:#9ECBFF"> world!</span></span>
+<span class="line"></span></code></pre>
+<p>为了能够检查出类型的错误，我们还需要一些额外的静态检查工具。比如 Python 官方维护的 <a href="https://github.com/python/mypy">mypy</a> 和 facebook 维护的 <a href="https://github.com/facebook/pyre-check">pyre</a>。在开发的过程中，我们可以使用这类工具扫描代码，提前发现代码中的 bug，和其他语言的编译过程异曲同工。这篇文章会使用 mypy 作为例子，毕竟 Python type hints 的很多语法都继承自 mypy。</p>
+<p>首先安装 mypy:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pip3</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> mypy</span></span>
+<span class="line"></span></code></pre>
+<p>然后使用 mypy 对上面的文件进行检查：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ mypy example.py</span></span>
+<span class="line"><span>example.py:5: error: Argument 2 to "exp" has incompatible type "str"; expected "int"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>除了内置的类型之外，Python 语法也支持用户创建的类</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> .mypackage </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Bar</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> f</span><span style="color:#E1E4E8">(bar: Bar) -> </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(bar.bar_method())</span></span>
+<span class="line"></span></code></pre>
+<p>不管你们相不相信，这种写法在 python3.0 中就已经被支持了（<a href="https://www.python.org/dev/peps/pep-3107/">PEP 3107</a>）。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ pyenv local python3.0.1; python</span></span>
+<span class="line"><span>Python 3.0.1 (r301:69556, May 24 2018, 14:39:16)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>>> def f(a: int, b: str): pass</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span>>>></span></span>
+<span class="line"><span></span></span></code></pre>
+<p>但是 Pyhton3 诞生这么多年，我印象中使用 Python type hints 语法的项目寥寥无几，除了对 Python 2.7 的兼容性外，另一个可能的原因是这套语法的功能还不够强大。在后来的 Python 版本中其语法也进行了不断的增强。</p>
+<h3 id="python-35-typing">Python 3.5: typing</h3>
+<hr>
+<p>在 python3.5 中，引入了 <code>typing</code> 模块，现在我们可以表示嵌套结构了</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Dict, List</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> best_students</span><span style="color:#E1E4E8">(scores: Dict[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">]):</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> {name: score </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> name, score </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> scores.items </span><span style="color:#F97583">if</span><span style="color:#E1E4E8"> score </span><span style="color:#F97583">>=</span><span style="color:#79B8FF"> 90</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><code>Dict[str, int]</code> 表示一个 keys 的类型为 str，values 的类型为 int 的字典，比如 <code>{"a": 1, "b": 2}</code></p>
+<p><code>List[int]</code> 表示由整型组成的列表，比如<code>[0, 1, 1, 2, 3]</code></p>
+<p>基于 typing 提供的类型，我们可以写出相当复杂的嵌套结构：</p>
+<p><code>Dict[str, Dict[str, List[str]]]</code></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>{</span></span>
+<span class="line"><span>	'原木镇': {</span></span>
+<span class="line"><span>        '第一小学': ['张伟', '王伟', '王芳'],</span></span>
+<span class="line"><span>        '第二小学': ['李伟', '李娜'],</span></span>
+<span class="line"><span>	},</span></span>
+<span class="line"><span>	'鸽子镇': {</span></span>
+<span class="line"><span>        '高山中学': ['张敏', '李静'],</span></span>
+<span class="line"><span>        '亿百中学': ['王静']</span></span>
+<span class="line"><span>        '蟒蛇小学': ['刘伟', '王秀英']</span></span>
+<span class="line"><span>	}</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>由于 <code>typing</code> 模块并没有对 python 本身的语法作出修改，所以低于 3.5 的 python 版本也可以通过安装 pip 库 <a href="https://pypi.org/project/typing/">typing</a> 来获得这个功能。</p>
+<p>另外一个有趣的事情是，<code>typing</code> 使用方括号 <code>List[str]</code> 而不是圆括号 <code>List(str)</code>。如果你使用了后面的方法的话，mypy 会提醒你 <code>Suggestion: use List[...] instead of List(...)</code>。</p>
+<h2 id="typing-高级用法">typing 高级用法</h2>
+<h3 id="union">Union</h3>
+<p>有时候我们的参数、返回值（以及下面会谈到的变量）并不只有一种类型，这种情况下我们就可以使用 <code>Union</code> 对不同的类型进行或操作：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Union, List</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> get_first_name</span><span style="color:#E1E4E8">(names: List[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">]) -> Union[</span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#79B8FF"> len</span><span style="color:#E1E4E8">(names) </span><span style="color:#F97583">>=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> names[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#F97583">    else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> None</span></span>
+<span class="line"></span></code></pre>
+<p>上面这个函数的返回值可能是 <code>None</code>，也可能是一个字符串</p>
+<h3 id="callable">Callable</h3>
+<p>Python 中万物皆是对象，函数也是对象。<code>Callable</code> 就可以表示函数类型。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Callable</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> get_regex</span><span style="color:#E1E4E8">() -> Callable[[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">], </span><span style="color:#79B8FF">bool</span><span style="color:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#F97583">    def</span><span style="color:#B392F0"> regex</span><span style="color:#E1E4E8">(pattern: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">, string: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">) -> </span><span style="color:#79B8FF">bool</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> re</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> regex()</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>在上面的例子中，<code>get_regex</code> 函数返回一个 <code>Callable</code> 对象。这个对象接受两个位置参数，类型分别是 <code>str</code> 和 <code>str</code>。它的返回值的类型是 <code>bool</code>。</p>
+<p>不过 Callable 不能表示位置参数，在下面我还会详细地谈到这个问题。</p>
+<h3 id="any">Any</h3>
+<p>无论如何，Python 的类型注解系统总是无法表达所有的类型</p>
+<p>Python 总有一些我们很难表达的形式或者类型。这种情况下我就能使用 <code>typing.Any</code>，它代表任何东西。比如说</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Any</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> log</span><span style="color:#E1E4E8">(msg: Any):</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(Any)</span></span>
+<span class="line"></span></code></pre>
+<h3 id="python-36-variable-annotations">Python 3.6: variable annotations</h3>
+<p>在 python3.6 中，除了函数的参数和返回值外，变量也可以表示类型了（<a href="https://www.python.org/dev/peps/pep-0526/">PEP 526</a>）</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">items: </span><span style="color:#79B8FF">list</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> read_json_file()</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> Employee</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">NamedTuple</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#79B8FF">str</span></span>
+<span class="line"><span style="color:#79B8FF">    id</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"></span></code></pre>
+<p>通过这种形式，我们可以实现“先声明，后赋值”的写法。而这种特性就是 Python 3.7 的 dataclass 的基础。</p>
+<h3 id="python-37-dataclass">Python 3.7: dataclass</h3>
+<p>我在上面说过，python 解析器并不会在意类型注解，严格来说这是不对的，Python 会把类型信息放在 <code>__annotations__</code> 属性中：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>>>> def foo(a: str):</span></span>
+<span class="line"><span>...     print('hello', a)</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>>> foo.__annotations__</span></span>
+<span class="line"><span>{'a': str}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>>> class Bar:</span></span>
+<span class="line"><span>...     a: str</span></span>
+<span class="line"><span>...     b: int</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>>> Bar.__annotations__</span></span>
+<span class="line"><span>{'a': str, 'b': int}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>所以在 python 中，类型信息是可以被获取到并被加以利用的。在过去，我们会这么写一个类：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Tuple</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> Bar</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    def</span><span style="color:#79B8FF"> __init__</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">        self, name: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">, size: </span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">, phone: </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">, location: Tuple[</span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">    ):</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.name </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> name</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.size </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> size</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.phone </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> phone</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.location </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> location</span></span>
+<span class="line"></span></code></pre>
+<p>但是在 python3.7 中，我们可以利用新的 dataclass 大幅简化这类语法：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> dataclasses </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> dataclass</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Tuple</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> Bar</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">dataclass</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#79B8FF">str</span></span>
+<span class="line"><span style="color:#E1E4E8">    size: </span><span style="color:#79B8FF">float</span></span>
+<span class="line"><span style="color:#E1E4E8">    phone: </span><span style="color:#79B8FF">int</span></span>
+<span class="line"><span style="color:#E1E4E8">    location: Tuple[</span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span></code></pre>
+<p>dataclass 作为一个例子，展示了 Python 的 type hints 的潜力。</p>
+<h2 id="格式">格式</h2>
+<h2 id="其他好处ide">其他好处：IDE</h2>
+<h2 id="python-typing-不能做什么">python typing 不能做什么</h2>
+<p>相比于 typescript 之于 javascript，python typing 的语法改动非常有限。这也导致了 Python 的类型检查并不能够覆盖所有的情况，比如说关键字参数：</p>
+<blockquote>
+<p>There is no syntax to indicate optional or keyword arguments; such function types are rarely used as callback types. <code>Callable[..., ReturnType]</code> (literal ellipsis) can be used to type hint a callable taking any number of arguments and returning <code>ReturnType</code>.</p>
+<p>——<a href="https://docs.python.org/3.7/library/typing.html#typing.Callable">python typing 官方文档</a></p>
+</blockquote>
+<p>下面这个</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> foo</span><span style="color:#E1E4E8">(item: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">) -> </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(item </span><span style="color:#F97583">+</span><span style="color:#9ECBFF"> "s"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">foo(</span><span style="color:#FFAB70">item</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<p>对于这个错误，mypy 可以检查出来：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> mypy</span><span style="color:#9ECBFF"> example.py</span></span>
+<span class="line"><span style="color:#B392F0">example.py:5:</span><span style="color:#9ECBFF"> error:</span><span style="color:#9ECBFF"> Argument</span><span style="color:#9ECBFF"> "item"</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> "foo"</span><span style="color:#9ECBFF"> has</span><span style="color:#9ECBFF"> incompatible</span><span style="color:#9ECBFF"> type</span><span style="color:#9ECBFF"> "int"</span><span style="color:#E1E4E8">; </span><span style="color:#B392F0">expected</span><span style="color:#9ECBFF"> "str"</span></span>
+<span class="line"></span></code></pre>
+<p>但是只要加上一个装饰器，哪怕这个装饰器并没有改变参数和返回值的类型，由于 Python 语法的限制，我们无法精确地声明被装饰后的函数的关键字参数类型，于是 mypy 就检查不出这个错误了：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> time</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> typing </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Callable</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> foo_timer</span><span style="color:#E1E4E8">(func) -> Callable[</span><span style="color:#79B8FF">...</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#79B8FF"> __debug__</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">        def</span><span style="color:#B392F0"> new_func</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">*</span><span style="color:#E1E4E8">args, </span><span style="color:#F97583">**</span><span style="color:#E1E4E8">kwargs) -> </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">            start </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> time.time()</span></span>
+<span class="line"><span style="color:#E1E4E8">            result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> func(</span><span style="color:#F97583">*</span><span style="color:#E1E4E8">args, </span><span style="color:#F97583">**</span><span style="color:#E1E4E8">kwargs)</span></span>
+<span class="line"><span style="color:#79B8FF">            print</span><span style="color:#E1E4E8">(time.time() </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> start)</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8"> result</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> new_func</span></span>
+<span class="line"><span style="color:#F97583">    else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> func</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@foo_timer</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> foo</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">*</span><span style="color:#E1E4E8">, item: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">) -> </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(item </span><span style="color:#F97583">+</span><span style="color:#9ECBFF"> "s"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">foo(</span><span style="color:#FFAB70">item</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> mypy</span><span style="color:#9ECBFF"> example.py</span></span>
+<span class="line"><span style="color:#B392F0">$</span></span>
+<span class="line"></span></code></pre>
+<p>我可不是在钻牛角尖，我在某个项目中大量使用到了装饰器配合关键字参数的写法，结果 mypy 对这种情况的静态检查根本无能为力，让我又回到了以前只有在 runtime 时才能暴露问题的时代。</p>
+<p>同样是对动态语言的类型检查，相比于 typescript 对 javascript 语法的重新设计，Python 选择了尽可能兼容原来的写法，方便上手的同时，距离真正的静态语言还有着相当多的进步空间。</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/django-translation-tutorial/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/django-translation-tutorial/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/django-translation-tutorial/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>Django 多语言教程 (i18n)</h1> <span class="opacity-50 text-base"> <time datetime="2018-07-03T00:00:00.000Z"> Jul 3, 2018 </time> </span> <div class="pt-10"> <!-- 原文链接：https://ocavue.com/django_translation_tutorial.html -->
+<h2 id="概览">概览</h2>
+<p>最近公司准备扩张海外业务，所以要给 Django 系统添加 <strong>国际化与本土化</strong> 支持。国际化一般简称 <strong>i18n</strong>，代表 Internationalization 中 i 和 n 有 18 个字母；本地化简称 <strong>L10n</strong>，表示 Localization 中 l 和 n 中有 10 个字母。有趣的一点是，一般会用小写的 i 和大写的 L 防止混淆。</p>
+<p>简单来说：i18n 是为国际化搭建框架，L10n 是针对不同地区的适配。举个简单的例子：</p>
+<p>i18n:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">datetime.now().strftime(</span><span style="color:#9ECBFF">'%Y/%m/</span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">)  </span><span style="color:#6A737D"># before i18n</span></span>
+<span class="line"><span style="color:#E1E4E8">datetime.now().strftime(timeformat)  </span><span style="color:#6A737D"># after i18n</span></span>
+<span class="line"></span></code></pre>
+<p>L10n:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">timeformat </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    'cn'</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'%Y/%m/</span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    'us'</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'%m/</span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF">/%Y'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    'fr'</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'</span><span style="color:#79B8FF">%d</span><span style="color:#9ECBFF">/%m/%Y'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    ...</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>更加具体的定义可以看 <a href="https://www.w3.org/International/questions/qa-i18n">W3C</a> 的解释。</p>
+<p>i18n 的范围非常广，包括多语言、时区、货币单位、单复数、字符编码甚至是文字阅读顺序（<a href="https://en.wikipedia.org/wiki/Right-to-left">RTL</a>）等等。这篇文章只关注 <strong>i18n 的多语言</strong> 方面。</p>
+<p><img src="https://i.loli.net/2019/05/06/5ccfe8a27e378.jpg" alt="使用阿拉伯语的 windows 系统，来源"></p>
+<blockquote>
+<p>↑ 阿拉伯语的 windows 系统，文字甚至界面的方向都与中文版的相反（<a href="http://blog.dmitriev.de/Articles/24-JUL-2014-ArabianWindow.html">图片来源</a>）</p>
+</blockquote>
+<h2 id="基本步骤">基本步骤</h2>
+<p>Django 作为一个大而全的框架，已经提供了一套多语言的解决方案，我稍微对比了一下，并没能找到在 Django 体系下比官方方案还好用的库。Django 的方案可以简单分为四步：</p>
+<ol>
+<li>一些必要的配置</li>
+<li>在代码中标记需要翻译的文本</li>
+<li>使用 <code>makemessages</code> 命令生成 po 文件</li>
+<li>编译 <code>compilemessages</code> 命令编译 mo 文件</li>
+</ol>
+<p>下面我们详细来看看</p>
+<h3 id="第一步配置">第一步：配置</h3>
+<p>首先在 settings.py 中加入这几个内容</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#79B8FF">LOCALE_PATHS</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">    os.path.join(</span><span style="color:#79B8FF">__file__</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">'language'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">MIDDLEWARE</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#79B8FF">    ...</span></span>
+<span class="line"><span style="color:#9ECBFF">    'django.middleware.locale.LocaleMiddleware'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    ...</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">LANGUAGES</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">    (</span><span style="color:#9ECBFF">'en'</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">'English'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">    (</span><span style="color:#9ECBFF">'zh'</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">'中文'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<p><code>LOCALE_PATHS</code>：指定下面第三步和第四步生成文件的位置。老版的 Django 需要手动新建好这个目录。</p>
+<p><code>LocaleMiddleware</code>：可以让 Django 识别并选择合适的语言。</p>
+<p><code>LANGUAGES</code>：指定了这个工程能提供哪些语言。</p>
+<h3 id="第二步标记文本">第二步：标记文本</h3>
+<p>之前没有多语言的需要，所以大家在 AJAX 相应代码中直接写了中文，比如这样：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">return</span><span style="color:#E1E4E8"> JsonResponse({</span><span style="color:#9ECBFF">"msg"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"内容过长"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"code"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"data"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">})</span></span>
+<span class="line"></span></code></pre>
+<p>现在需要多语言了，就需要告诉 Django 哪些内容是需要翻译的。对于上面的例子来说，就是写成这样：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> django.utils.translation </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> gettext </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> _</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">return</span><span style="color:#E1E4E8"> JsonResponse({</span><span style="color:#9ECBFF">"msg"</span><span style="color:#E1E4E8">: _(</span><span style="color:#9ECBFF">"内容过长"</span><span style="color:#E1E4E8">), </span><span style="color:#9ECBFF">"code"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"data"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">})</span></span>
+<span class="line"></span></code></pre>
+<p>这里使用 <code>gettext</code> 函数将原本的字符串包裹起来，这样的话，Django 就可以根据当前语言返回合适的字符串。一般会使用单个下划线 <code>_</code> 提高可读性。</p>
+<p>因为我司几乎所有前后端通信都使用 AJAX，所以并没有怎么用上 Django 的模板功能（顺便一提，我司前端使用的多语言工具是 <a href="https://github.com/i18next/i18next">i18next</a>）。不过在这里也一并写下 Django 模板的标记方法：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>&#x3C;title>{% trans "This is the title." %}&#x3C;/title></span></span>
+<span class="line"><span>&#x3C;title>{% trans myvar %}&#x3C;/title></span></span>
+<span class="line"><span></span></span></code></pre>
+<p>其中 <code>trans</code> 标签告诉 Django 需要翻译这个括号里面的内容。更具体的用法可以参考<a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#trans-template-tag">官方文档</a>。</p>
+<h3 id="第三步makemessages">第三步：<code>makemessages</code></h3>
+<p>在执行这一步之前，请先通过 <code>xgettext --version</code> 确认自己是否安装了 <a href="https://www.gnu.org/software/gettext/gettext.html">GNU gettext</a>。GNU gettext 是一个标准 i18n L10n 库，Django 和很多其他语言和库的多语言模块都调用了 GNU gettext，所以接下来讲的一些 Django 特性实际上要归功于 GNU gettext。如果没有安装的话可以通过下面的方法安装：</p>
+<p>ubuntu:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> update</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> gettext</span></span>
+<span class="line"></span></code></pre>
+<p><a href="https://stackoverflow.com/a/33896321">macOS</a>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> brew</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> gettext</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> brew</span><span style="color:#9ECBFF"> link</span><span style="color:#79B8FF"> --force</span><span style="color:#9ECBFF"> gettext</span></span>
+<span class="line"></span></code></pre>
+<p><a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#gettext-on-windows">windows</a></p>
+<p>安装完 GNU gettext 后，对 Django 工程执行下面的命令</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> python3</span><span style="color:#9ECBFF"> manage.py</span><span style="color:#9ECBFF"> makemessages</span><span style="color:#79B8FF"> --local</span><span style="color:#9ECBFF"> en</span></span>
+<span class="line"></span></code></pre>
+<p>之后可以找到生成的文件：<code>language/en/LC_MESSAGES/django.po</code>。把上面命令中的 <code>en</code> 替换成其他语言，就可以生成不同语言的 <code>django.po</code> 文件。里面的内容大概是这样的：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>#: path/file.py:397</span></span>
+<span class="line"><span>msgid "订单已删除"</span></span>
+<span class="line"><span>msgstr ""</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Django 会找到被 <code>gettext</code> 函数包裹的所有字符串，以 <code>msgid</code> 的形式保存在 <code>django.po</code>。每个 <code>msgid</code> 下面的 <code>msgstr</code> 就代表你要把这个 <code>msgid</code> 翻译成什么。通过修改这个文件可以告诉 Django 翻译的内容。同时通过注释说明了这个 <code>msgid</code> 出现在哪个文件的哪一行。</p>
+<p>关于这个文件，发现几点有趣的特性：</p>
+<ul>
+<li>Django 会把多个文件中相同的 <code>msgid</code> 归类在一起。「一次编辑，到处翻译」</li>
+<li>如果以后源码中某个 <code>msgid</code> 被删了，那么再次执行 <code>makemessages</code> 命令后，这个 <code>msgid</code> 和它的 <code>msgstr</code> 会以注释的形式继续保存在 <code>django.po</code> 中。</li>
+<li>既然源码中的字符串只是一个所谓的 id，那么我就可以在源码中写没有实际含义的字符串，比如 <code>_("ERROR_MSG42")</code>，然后将 “ERROR_MSG42” 同时翻译成中文和英文。</li>
+<li>这个文件中会保留模板字符串的占位符，比如可以使用命名占位符做到在不同语言中使用不同占位符顺序的功能，下面给出了一个例子：</li>
+</ul>
+<p>py file:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>_('Today is {month} {day}.').format(month=m, day=d)</span></span>
+<span class="line"><span>_('Today is %(month)s %(day)s.') % {'month': m, 'day': d}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>po file:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>msgid "Today is {month} {day}."</span></span>
+<span class="line"><span>msgstr "Aujourd'hui est {day} {month}."</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>msgid "Today is %(month)s %(day)s."</span></span>
+<span class="line"><span>msgstr "Aujourd'hui est %(day)s %(month)s."</span></span>
+<span class="line"><span></span></span></code></pre>
+<h3 id="第四步compilemessages">第四步：<code>compilemessages</code></h3>
+<p>修改好 <code>django.po</code> 文件后，执行下面的命令：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> python3</span><span style="color:#9ECBFF"> manage.py</span><span style="color:#9ECBFF"> compilemessages</span><span style="color:#79B8FF"> --local</span><span style="color:#9ECBFF"> en</span></span>
+<span class="line"></span></code></pre>
+<p>Django 会调用程序，根据 <code>django.po</code> 编译出一个名为 <code>django.mo</code> 的二进制文件，位置和 <code>django.po</code> 所在位置相同。这个文件才是程序执行的时候会去读取的文件。</p>
+<p>执行完上面四步后，修改浏览器的语言设置，就可以看到 Django 的不同输出了。</p>
+<p><img src="https://i.loli.net/2019/05/06/5ccfe8a63ea5d.jpg" alt="Chrome 的语言设置"></p>
+<blockquote>
+<p>↑ Chrome 的语言设置</p>
+</blockquote>
+<!-- 还有一个值得注意的地方，在 Django 中，各个语言是不平等的。英语相比于其他语言来说，有着更重要的位置。比如下面这点是有多于或等于三种语言的工程需要注意的
+
+> When an English variant is activated and English strings are missing, the fallback language will not be the [`LANGUAGE_CODE`](https://docs.djangoproject.com/en/2.0/ref/settings/#std:setting-LANGUAGE_CODE) of the project, but the original strings. For example, an English user visiting a site with[`LANGUAGE_CODE`](https://docs.djangoproject.com/en/2.0/ref/settings/#std:setting-LANGUAGE_CODE) set to Spanish and original strings written in Russian will see Russian text rather than Spanish. -->
+<h2 id="高级特性">高级特性</h2>
+<h3 id="i18n_patterns"><code>i18n_patterns</code></h3>
+<p>有的时候，我们希望可以通过 URL 来选择不同的语言。这样做有很多好处，比如同一个 URL 返回的数据的语言一定是一致的。Django 的文档就使用了这种做法：</p>
+<blockquote>
+<p>简体中文：<a href="https://docs.djangoproject.com/zh-hans/2.0/">https://docs.djangoproject.com/zh-hans/2.0/</a></p>
+<p>英文：<a href="https://docs.djangoproject.com/en/2.0/">https://docs.djangoproject.com/en/2.0/</a></p>
+</blockquote>
+<p>具体的做法是在 URL 中添加 <code>&#x3C;slug:slug></code></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">urlpatterns </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> ([</span></span>
+<span class="line"><span style="color:#E1E4E8">    path(</span><span style="color:#9ECBFF">'category/&#x3C;slug:slug>/'</span><span style="color:#E1E4E8">, news_views.category),</span></span>
+<span class="line"><span style="color:#E1E4E8">    path(</span><span style="color:#9ECBFF">'&#x3C;slug:slug>/'</span><span style="color:#E1E4E8">, news_views.details),</span></span>
+<span class="line"><span style="color:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<p>详细的做法可以参考 Django 的<a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#url-internationalization">官方文档</a>。</p>
+<h3 id="django-如何决定使用哪种语言">Django 如何决定使用哪种语言</h3>
+<p>我们之前讲过 <code>LocaleMiddleware</code> 可以决定使用何种语言。具体来说，<code>LocaleMiddleware</code> 是按照下面的顺序（优先级递减）：</p>
+<ul>
+<li><code>i18n_patterns</code></li>
+<li><code>request.session[settings.LANGUAGE_SESSION_KEY]</code></li>
+<li><code>request.COOKIES[settings.LANGUAGE_COOKIE_NAME]</code></li>
+<li><code>request.META['HTTP_ACCEPT_LANGUAGE']</code>，即 HTTP 请求中的 <code>Accept-Language</code> header</li>
+<li><code>settings.LANGUAGE_CODE</code></li>
+</ul>
+<p>我司选择把语言信息放到 Cookies 中，当用户手动选择语言时，可以让前端直接修改 Cookies，而不需要请求后台的某个接口。没有手动设置过语言的用户就没有这个 Cookies，跟随浏览器设置。话说 <code>settings.LANGUAGE_COOKIE_NAME</code> 的默认值是 <code>django_language</code>，前端不想在他们的代码中出现 <code>django</code>，所以我在 <code>settings.py</code> 中添加了 <code>LANGUAGE_COOKIE_NAME = app_language</code> 😂。</p>
+<p>你也可以通过 <code>request.LANGUAGE_CODE</code> 在 View 中手动获知 <code>LocaleMiddleware</code> 选用了哪种语言。你甚至可以通过 <code>activate</code> 函数手动指定当前线程使用的语言：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> django.utils.translation </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> activate</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">activate(</span><span style="color:#9ECBFF">'en'</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h3 id="ugettext">ugettext</h3>
+<p>Python2 时代，为了区分 unicode strings 和 bytestrings，有 <code>ugettext</code> 和 <code>gettext</code> 两个函数。在 Python3 中，由于字符串编码的统一，<code>ugettext</code> 和 <code>gettext</code> 是等价的。官方说未来可能会废弃 <code>ugettext</code>，但是截止到现在（Django 2.0），<code>ugettext</code> 还没废弃。</p>
+<h3 id="gettext_lazy">gettext_lazy</h3>
+<p>这里先用一个例子直观地看一下 <code>gettext_lazy</code> 和 <code>gettext</code> 的区别</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> django.utils.translation </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> gettext, gettext_lazy, activate, get_language</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">gettext_str </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> gettext(</span><span style="color:#9ECBFF">"Hello World!"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">gettext_lazy_str </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> gettext_lazy(</span><span style="color:#9ECBFF">"Hello World!"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">type</span><span style="color:#E1E4E8">(gettext_str))</span></span>
+<span class="line"><span style="color:#6A737D"># &#x3C;class 'str'></span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">type</span><span style="color:#E1E4E8">(gettext_lazy_str))</span></span>
+<span class="line"><span style="color:#6A737D"># &#x3C;class 'django.utils.functional.lazy.&#x3C;locals>.__proxy__'></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"current language:"</span><span style="color:#E1E4E8">, get_language())</span></span>
+<span class="line"><span style="color:#6A737D"># current language: zh</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(gettext_str, gettext_lazy_str)</span></span>
+<span class="line"><span style="color:#6A737D"># 你好世界！ 你好世界！</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">activate(</span><span style="color:#9ECBFF">"en"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"current language:"</span><span style="color:#E1E4E8">, get_language())</span></span>
+<span class="line"><span style="color:#6A737D"># current language: en</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(gettext_str, gettext_lazy_str)</span></span>
+<span class="line"><span style="color:#6A737D"># 你好世界！ Hello World!</span></span>
+<span class="line"></span></code></pre>
+<p><code>gettext</code> 函数返回的是一个字符串，但是 <code>gettext_lazy</code> 返回的是一个代理对象。这个对象会在被使用的时候，才根据当前线程中语言决定翻译成什么文字。</p>
+<p>这个功能在 Django 的 models 中尤其的有用。因为 models 中定义字符串的代码只会执行一次。在之后的请求中，根据语言的不同，这个所谓字符串要有不同的表现。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> django.utils.translation </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> gettext_lazy </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> _</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> MyThing</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">models</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">Model</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    name </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> models.CharField(</span><span style="color:#FFAB70">help_text</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">_(</span><span style="color:#9ECBFF">'This is the help text'</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> YourThing</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">models</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">Model</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    kind </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> models.ForeignKey(</span></span>
+<span class="line"><span style="color:#E1E4E8">        ThingKind,</span></span>
+<span class="line"><span style="color:#FFAB70">        on_delete</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">models.</span><span style="color:#79B8FF">CASCADE</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">        related_name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">'kinds'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">        verbose_name</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">_(</span><span style="color:#9ECBFF">'kind'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"></span></code></pre>
+<h3 id="使用-ast--fst-修改源码">使用 AST / FST 修改源码</h3>
+<p>由于我司工程非常庞大，人力给每个字符串添加 <code>_( ... )</code> 过于繁琐。所以我试图寻找一种自动化的方式。</p>
+<p>一开始选择的是 Python 内置的 <code>ast</code> (Abstract syntax tree 语法抽象树) 模块 。基本思路是通过 <code>ast</code> 找到工程中的所有字符串，再给这些字符串添加 <code>_( ... )</code>。最后把修改后的语法树重新转为代码。</p>
+<p>但是由于 <code>ast</code> 对格式信息的支持不佳，修改代码后容易造成格式混乱。所以找到了名为 FST (Full Syntax Tree 全面抽象树) 的改进方式。我选择的 FST 库是 <a href="https://github.com/PyCQA/redbaron"><code>redbaron</code></a>。核心的代码如下：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">root </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> RedBaron(original_code)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> node </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> root.find_all(</span><span style="color:#9ECBFF">"StringNode"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">        has_chinese_char(node)</span></span>
+<span class="line"><span style="color:#F97583">        and</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> is_aleady_gettext(node)</span></span>
+<span class="line"><span style="color:#F97583">        and</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> is_docstring(node)</span></span>
+<span class="line"><span style="color:#E1E4E8">    ):</span></span>
+<span class="line"><span style="color:#E1E4E8">        node.replace(</span><span style="color:#9ECBFF">"_(</span><span style="color:#79B8FF">{}</span><span style="color:#9ECBFF">)"</span><span style="color:#E1E4E8">.format(node))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">modified_code </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> root.dumps()</span></span>
+<span class="line"></span></code></pre>
+<p>我把完整的代码放到了 <a href="https://gist.github.com/ocavue/8c4a8ca228ece5f8291572318c45cfd1">Gist</a> 上，因为是一个一次性脚本，写的比较随意，大家可以参考。</p>
+<p>使用 <code>redbaron</code> 的过程中也发现了一些问题，一并记录这里：最大问题是 <code>redbaron</code> <a href="https://github.com/PyCQA/baron/pull/120"><strong>已经停止维护</strong></a>了！所以不能支持一些新语法，比如 Python3.6 的 f-string。其次是这个库和 <code>ast</code> 标准库相比，运行速度很慢，每次跑这个脚本我的电脑都发出了飞机引擎般的声音。第三点是会产生一些奇怪的格式：</p>
+<p>修改前:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">OutStockSheet </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#79B8FF">    1</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'未出库'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    2</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'已出库'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    3</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">'已删除'</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>修改后（<code>'已删除'</code> 右边的括号跑到了下一行）:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">OutStockSheet </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#79B8FF">    1</span><span style="color:#E1E4E8">: _(</span><span style="color:#9ECBFF">'未出库'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#79B8FF">    2</span><span style="color:#E1E4E8">: _(</span><span style="color:#9ECBFF">'已出库'</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#79B8FF">    3</span><span style="color:#E1E4E8">: _(</span><span style="color:#9ECBFF">'已删除'</span></span>
+<span class="line"><span style="color:#E1E4E8">)}</span></span>
+<span class="line"></span></code></pre>
+<p>最后一点倒是可以通过格式化工具解决，问题不大。</p>
+<h3 id="utf8--vs-utf-8"><code>utf8 </code> vs <code>utf-8</code></h3>
+<p>项目中有些 py 文件比较老，在文件开头使用了 <code># coding: utf8</code> 的标示。对于 Python 来说，utf8 是 utf-8 的别名，所以没有任何问题。Django 在调用 GNU gettext 时，会使用参数指定编码为 utf-8，但是 GNU 也会读取文件中的编码标示，而且它的优先级更高。不幸的是 utf8 对 GNU gettext 来说是一个未知编码，于是 GNU gettext 会降级使用 ASCII 编码，然后在遇到中文字符时报错（真笨！）：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ python3 manage.py makemessages --local en</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span>xgettext: ./path/filename.py:1: Unknown encoding "utf8". Proceeding with ASCII instead.</span></span>
+<span class="line"><span>xgettext: Non-ASCII comment at or before ./path/filename.py:26.</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>所以我需要把 <code># coding: utf8</code> 改成 <code># coding: utf-8</code>，或者干脆删掉这行，反正 Python3 已经默认使用 utf-8 编码了。</p>
+<h3 id="valueerror-plural-forms-expression-could-be-dangerous">ValueError: plural forms expression could be dangerous</h3>
+<p>简单来说，plural forms 就是 GNU gettext 控制语言的单复数表现的一个配置，详细的解释可以参考 GNU gettext 的<a href="https://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/Plural-forms.html">官方文档</a>。</p>
+<p>如果在操作 Django 工程的时候出现了 <code>ValueError: plural forms expression could be dangerous</code> 的报错，那么就说明 django.po 文件中的 plural forms 配置的不对。我在配置中文的翻译文件的时候遇到了这个问题，并通过了下面的步骤解决了这个问题：</p>
+<ol>
+<li>删除 django.mo 文件：只要这个文件没被删除，每次跑 manage.py 都会报错，包括 <code>makemessages</code> 和 <code>compilemessages</code> 命令在内的操作。</li>
+<li>修改 django.po 文件：我根据<a href="https://groups.google.com/forum/#!topic/django-users/KnVGzJAR2xw">这个链接</a>，将 zh/LC_MESSAGES/django.po 文件中的 <code>"Plural-Forms: nplurals=2; plural=(n != 1);\n"</code> 改成了 <code>"Plural-Forms: nplurals=1; plural=0;\n"</code>。其他的非英语语言很可能也需要对这行作出相应的修改。</li>
+<li>使用 <code>compilemessages</code> 重新生成 djanpo.mo 文件。</li>
+</ol>
+<p>经过上面的步骤之后，以后执行 <code>makemessages</code> 和 <code>compilemessages</code> 命令时，上面第 2 步作出的修改<strong>不会</strong>被替换，所以可以放心大胆地用。</p>
+<h2 id="总结">总结</h2>
+<p>Django (和其背后的 GNU gettext) 的多语言功能非常全面，堪称博大精深，比如处理单复数的 <a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#pluralization">ngettext</a>，处理多义词的 <a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#contextual-markers">pgettext</a>。HTTP 响应中使用翻译后的文本（<code>msgstr</code>），但是在日志中留下翻译前文本（<code>msgid</code>）的 <a href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/#gettext-noop">gettext_noop</a>。</p>
+<p>这篇文章主要讲了我在实践中用到的功能和遇到的坑，希望可以帮助大家了解 Django 多语言的基本用法。欢迎大家去<a href="https://juejin.im/post/5b3efc36e51d45197136eb09">掘金</a>评论👏。</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

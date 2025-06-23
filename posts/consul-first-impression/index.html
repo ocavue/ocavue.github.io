@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/consul-first-impression/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/consul-first-impression/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/consul-first-impression/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>Consul 初体验</h1> <span class="opacity-50 text-base"> <time datetime="2019-05-12T00:00:00.000Z"> May 12, 2019 </time> </span> <div class="pt-10"> <p>Consul 是一个分布式的<strong>服务发现</strong>和<strong>配置中心</strong>系统。虽然我才刚刚开始学习，用的还不算非常深入，但是可以把目前学到的东西整理一下，希望可以给其他入门者一些帮助。</p>
+<h2 id="微服务面临的挑战">微服务面临的挑战</h2>
+<p>微服务架构有很多优势，这个话题已经被讨论地太多了：部署灵活、逻辑清晰、扩展方便、高可用…… 我就不一一深入了。</p>
+<p><img  src="/_astro/monolithic-vs-microservices.Bkj1JzyZ_ZriL9f.webp" alt="" width="588" height="368" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ 将一个庞大的服务拆成若干个微服务，每个微服务负责一个独立的模块。</p>
+</blockquote>
+<p>但是天下没有没有免费的午餐，使用微服务也有很多挑战，而 Consul 就解决了微服务场景中很多痛点。下面我会解释一下其中两个比较关键的痛点以及 Consul 的解决方案。</p>
+<p><img  src="/_astro/monolith-microservices.K-lenNUG_9stMd.webp" alt="monolith-microservices" width="638" height="479" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ 如果不懂得如何正确地使用，那么任何架构没有价值。图片来自 Twitter@alvaro_sanchex</p>
+</blockquote>
+<h3 id="配置">配置</h3>
+<p>以前我们在使用 Monolithic 服务的时候，整个服务使用的一个配置文件。但是在使用了微服务架构后，配置文件就会变得非常多。比如我需要修改一下数据库的地址，如果我有 20 个微服务，那么我就需要修改 20 个配置文件。</p>
+<p><img  src="/_astro/conf.DTWkQ-NR_ZnQ4yk.webp" alt="" width="600" height="366" loading="lazy" decoding="async"></p>
+<p>为了解决这个问题 Consul 提供了一个分布式的键值对储存系统，称之为 <strong>K/V Store</strong>。</p>
+<p><img  src="/_astro/kv.Dx2LPqMa_X03FA.webp" alt="" width="346" height="404" loading="lazy" decoding="async"></p>
+<p>所有配置都储存在 Consul 中，我们可以在一个地方查看和修改所有服务的配置。Consul 的 K/V Store 是基于 Raft 算法实现的分布式系统，所以整个系统没有单点依赖，一个节点（比如一台服务器）出现故障并不会导致配置无法访问。</p>
+<h3 id="服务发现">服务发现</h3>
+<p>一个微服务可能有多个实例，共同提供微服务。这些服务的数量和 IP 地址可能会频繁地变化，导致调用方试图去请求微服务方的时候，并不知道应该请求哪个微服务实例。</p>
+<p>为了解决这个问题，一种常见的方案是在每一个微服务集群前放一个负载均衡（Load Balancing），其他服务需要调用这个服务的时候，先去调用 LB，由 LB 负责将请求分发到不同的微服务实例上。LB 的地址是固定不变的，所以调用方总是知道应该找谁。</p>
+<p><img  src="/_astro/lb.BpejoXEk_JIXjA.webp" alt="" width="368" height="488" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ 使用 LB 去分发流量</p>
+</blockquote>
+<p>但是使用 LB 分发流量带来了其他问题，比如说 LB 成为了一个单点。如果 LB 挂了，那么无论它的背后有多少个微服务实例，这些实例都无法正常工作。另外一个问题是这样的调用增加了调用的链条，使得微服务之间的调用延迟变得更高。</p>
+<p>Consul 可以提供了一个分布式服务于注册集群，每一个节点在创建或者销毁微服务的时候，可以通知这个集群，并将最新的微服务信息注册到这个集群中。通过分布式算法，每一个节点都可以获取到所有节点上的服务信息。</p>
+<p><img  src="/_astro/service-discovery.BUK0pAQj_ZLrMdb.webp" alt="" width="336" height="446" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ 使用分布式注册与发现服务，让调用方可以直接知道微服务的日志，并直接去请求微服务的地址</p>
+</blockquote>
+<h2 id="使用-docker-学习-consul">使用 Docker 学习 Consul</h2>
+<p>我创建了一个 docker-compose 项目，使用多个 Docker 容器去模拟多台服务器，方便学习 Consul。</p>
+<p>GitHub 地址：<a href="https://github.com/ocavue/consul-playground">https://github.com/ocavue/consul-playground</a></p>
+<p>使用前需要确保安装了 docker-compose 和 Docker。可以使用 <code>which docker-compose docker</code> 来确认。如果你安装 Docker 的平台是 Mac 或者 Windows，那么 docker-compose 已经默认安装好了。</p>
+<p>下面的步骤根据你的配置可能需要 <code>sudo</code>，我就不一一加上了。输入 <code>make build</code> 来构建镜像，第一次构建的时候可能需要几分钟的时间。在这个 docker-compose 中，我创建了 4 个容器，名字分别为 <code>vm0</code>,<code>vm1</code>,<code>vm2</code>,<code>vm3</code>。可以通过 <code>docker exec -it vm0 bash</code> 进入各个容器内部。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">root@vm1:/#</span><span style="color:#9ECBFF"> which</span><span style="color:#9ECBFF"> consul</span></span>
+<span class="line"><span style="color:#B392F0">/usr/local/bin/consul</span></span>
+<span class="line"><span style="color:#B392F0">root@vm1:/#</span><span style="color:#9ECBFF"> consul</span><span style="color:#79B8FF"> --version</span></span>
+<span class="line"><span style="color:#B392F0">Consul</span><span style="color:#9ECBFF"> v1.4.4</span></span>
+<span class="line"><span style="color:#B392F0">Protocol</span><span style="color:#79B8FF"> 2</span><span style="color:#9ECBFF"> spoken</span><span style="color:#9ECBFF"> by</span><span style="color:#9ECBFF"> default,</span><span style="color:#9ECBFF"> understands</span><span style="color:#79B8FF"> 2</span><span style="color:#9ECBFF"> to</span><span style="color:#79B8FF"> 3</span><span style="color:#E1E4E8"> (agent </span><span style="color:#9ECBFF">will</span><span style="color:#9ECBFF"> automatically</span><span style="color:#9ECBFF"> use</span><span style="color:#9ECBFF"> protocol</span><span style="color:#F97583"> ></span><span style="color:#9ECBFF">2</span><span style="color:#9ECBFF"> when</span><span style="color:#9ECBFF"> speaking</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> compatible</span><span style="color:#9ECBFF"> agents</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">root@vm1:/#</span></span>
+<span class="line"></span></code></pre>
+<p>接下来所有的例子都可以直接在这个 docker-compose 中运行。</p>
+<h3 id="安装-consul-以及注册节点">安装 Consul 以及注册节点</h3>
+<p>Consul 使用 Go 便写，所以最后打包出来的是一个拥有所有依赖的二进制包 <del>以及 flag 包带来的奇怪的命令行参数格式</del>。可以直接将二进制包下载到本地并软链到 <code>PATH</code> 中即可。这一步在创建 Docker 镜像的时候已经自动完成了。</p>
+<h3 id="配置中心">配置中心</h3>
+<p>我们可以使用<a href="https://www.consul.io/docs/commands/kv.html">命令行工具</a>、<a href="https://www.consul.io/api/kv.html">HTTP API</a> 以及图形界面（本质上也是基于 HTTP API）来编辑这些配置。`</p>
+<img src="./assets/localhost_8500_ui_mydc_kv_1.png" style="border: 1px solid #9d2159">
+<img src="./assets/localhost_8500_ui_mydc_kv_2.png" style="border: 1px solid #9d2159">
+<blockquote>
+<p>↑ Consul 的 Web 图形界面，URL 是 <a href="http://127.0.0.1:8500/ui/">http://127.0.0.1:8500/ui/</a></p>
+</blockquote>
+<p>Consul 的配置系统和 zookeeper 类似，使用的是类似文件目录的方式。Key <code>config/order/db/redis/prof</code> 是一个目录，Value 是具体的数据。所以可以做到嵌套的配置，方便分类管理</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">/config</span></span>
+<span class="line"><span style="color:#B392F0">		/order</span></span>
+<span class="line"><span style="color:#B392F0">				/host:</span><span style="color:#9ECBFF"> "...."</span></span>
+<span class="line"><span style="color:#B392F0">				/db</span></span>
+<span class="line"><span style="color:#B392F0">						/redis</span></span>
+<span class="line"><span style="color:#B392F0">								/prof:</span><span style="color:#9ECBFF"> "...."</span></span>
+<span class="line"><span style="color:#B392F0">						/mongodb:</span><span style="color:#9ECBFF"> "...."</span></span>
+<span class="line"><span style="color:#B392F0">				/mq</span></span>
+<span class="line"><span style="color:#B392F0">						/rabbitmq:</span><span style="color:#9ECBFF"> "...."</span></span>
+<span class="line"></span></code></pre>
+<p>需要特别注意的是 Consul 限制了 value 的大小，最大是 512Kb。</p>
+<h3 id="服务注册与发现">服务注册与发现</h3>
+<p>我们假设现在有一个叫做 order 的微服务。我们想要要在 vm0 上注册这个服务。</p>
+<p>在容器 <code>vm0</code> 中创建 <code>/etc/consul.d/order-1.json</code> 并写入下面的内容</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "service"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "port"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7100</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><code>/etc/consul.d</code> 是存放 Consul 配置文件的目录。创建好配置后在 vm0 上执行 <code>consul reload</code>，这个服务就注册完了。</p>
+<p>我们可以在其他的机器上（比如 vm1）通过 Consul 的 API 参看刚刚注册的服务：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">root@vm</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">:/# curl -s http:</span><span style="color:#6A737D">//localhost:8500/v1/catalog/service/order | python3 -m json.tool</span></span>
+<span class="line"><span style="color:#E1E4E8">[</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">        "ID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"ac54685b-3489-ca6a-59d6-fe50b9b292b4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "Node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"vm0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "Address"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"172.18.0.4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "Datacenter"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"mydc"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "TaggedAddresses"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">            "lan"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"172.18.0.4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">            "wan"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"172.18.0.4"</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#79B8FF">        "NodeMeta"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">            "consul-network-segment"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceKind"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceName"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceTags"</span><span style="color:#E1E4E8">: [],</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceAddress"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceWeights"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">            "Passing"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">            "Warning"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceMeta"</span><span style="color:#E1E4E8">: {},</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServicePort"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7100</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceEnableTagOverride"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceProxyDestination"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceProxy"</span><span style="color:#E1E4E8">: {},</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceConnect"</span><span style="color:#E1E4E8">: {},</span></span>
+<span class="line"><span style="color:#79B8FF">        "CreateIndex"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">602</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ModifyIndex"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">602</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span></code></pre>
+<p>可以看到在其他服务器上的已经可以找到这个 order 服务了。我们在配置文件中写的三个字段分别展示在 <code>ServiceID</code>, <code>ServiceName</code>, <code>ServicePort</code> 中。</p>
+<p>在注册服务时候，我们在 json 文件中填写的 id 必须保证<strong>单台服务器上内唯一</strong>。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">root@vm</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">:/# curl -s http:</span><span style="color:#6A737D">//localhost:8500/v1/catalog/service/order | python3 -m json.tool</span></span>
+<span class="line"><span style="color:#E1E4E8">[</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">        "Node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"vm0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceName"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServicePort"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7100</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        ......</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">        "Node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"vm0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-2"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceName"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServicePort"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7200</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        ......</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">        "Node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"vm1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceName"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServicePort"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7100</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        ......</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">        "Node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"vm2"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceID"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServiceName"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "ServicePort"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7100</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        ......</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">root@vm</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">:/#</span></span>
+<span class="line"></span></code></pre>
+<blockquote>
+<p>↑ 多个节点中可以注册 ServiceID 相同的服务</p>
+</blockquote>
+<p>这里需要特别提一点，服务的注册只是”注册”而已，相当于把这个 json 配置文件的内容放到了一个分布式储存系统中。Consul 本身并不会帮你在 7100 端口上启动你的 order 服务，这件事情需要你自己去做。</p>
+<p>看到这里，我们已经简单地走完了一套服务注册与发现的流程。下面说一些其他比较常用的操作。</p>
+<h4 id="通过-api-注册服务">通过 API 注册服务</h4>
+<p>除了文件，consul 也支持通过 RESTful HTTP API 创建服务：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">root@vm1:~#</span><span style="color:#9ECBFF"> cat</span><span style="color:#9ECBFF"> payload.json</span></span>
+<span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#B392F0">    "id"</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> "order-3",</span></span>
+<span class="line"><span style="color:#B392F0">    "name"</span><span style="color:#79B8FF">:</span><span style="color:#B392F0">"order"</span><span style="color:#B392F0">,</span></span>
+<span class="line"><span style="color:#B392F0">    "port"</span><span style="color:#B392F0">:7300</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#B392F0">root@vm1:~#</span><span style="color:#9ECBFF"> curl</span><span style="color:#79B8FF"> --request</span><span style="color:#9ECBFF"> PUT</span><span style="color:#79B8FF"> --data</span><span style="color:#9ECBFF"> @payload.json</span><span style="color:#9ECBFF"> http://127.0.0.1:8500/v1/agent/service/register</span></span>
+<span class="line"><span style="color:#B392F0">root@vm1:~#</span></span>
+<span class="line"></span></code></pre>
+<p>通过 API 创建不需要执行 <code>consul reload</code>。</p>
+<p>值得注意 Consul 中配置项的写法。在<strong>配置文件</strong>中，只能使用 <code>snake_case</code>，在 HTTP API 的<strong>请求</strong>中，<code>snake_case</code> 和 <code>CamelCased</code> 都可以使用，在 API 的<strong>响应</strong>中，Consul 返回的结果是 <code>CamelCased</code>。在这篇文章中我在服务定义中使用的都是 <code>snake_case</code>，因为这是在配置文件和 API 请求中都可以的写法。<a href="https://github.com/hashicorp/consul/blame/5508fd164cae4d1fad303805f96feca327f4d0be/website/source/docs/agent/services.html.md#L279-L288">（相关文档）</a></p>
+<h4 id="自定义信息">自定义信息</h4>
+<p>在注册服务的时候，我们可能希望像这个服务写入一些自定义的信息，consul 提供了两种不同的配置项方式去完成这项任务：<code>tags</code> 和 <code>meta</code>。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "port"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7400</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "tags"</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">"primary"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"hotfix"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"v2"</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#79B8FF">  "meta"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "branch"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"fix_order_count"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "commit"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"e981106d2d84e"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "creator"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Alex"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>简单来说，tags 是一个列表，meta 是一个字典。consul 并不关心这两个配置的数据具体是什么，这些数据都是由调用方去关心的。</p>
+<p>出于性能和加密的考虑，<code>meta</code> 有一些限制，最多只能由 64 个键值对，key 只能使用特定的字符 （<code>A-Z</code> <code>a-z</code> <code>0-9</code> <code>_</code> 和 <code>-</code>），key 和 value 的最大长度分别是 128 和 512。</p>
+<h4 id="健康度检查">健康度检查</h4>
+<p>在部署 Consul 的时候，每台运行服务的机器都需要运行一个 agent 服务，原因之一是 Consul 提供了健康度检查的功能，这也是一个单纯的分布式存储系统所没有的。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "port"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7400</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "checks"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">      "args"</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">"/bin/check_mem.py"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"--limit"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"256M"</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#79B8FF">      "interval"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"10s"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>在上面这个服务的定义中，我们增加了一个 <code>checks</code> 配置，这个配置让 Consul 每十秒钟运行一下 <code>check_redis.py</code> 脚本，然后获取这个脚本的 stdout 和 exit code。之后就可以在整个集群上的任意节点上获取这个服务的信息</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>root@vm2:~# curl -s http://127.0.0.1:8500/v1/health/checks/order | python3 -m json.tool</span></span>
+<span class="line"><span>[</span></span>
+<span class="line"><span>    {</span></span>
+<span class="line"><span>        "Node": "vm3",</span></span>
+<span class="line"><span>        "CheckID": "service:order-4",</span></span>
+<span class="line"><span>        "Name": "Service 'order' check",</span></span>
+<span class="line"><span>        "Status": "warning",</span></span>
+<span class="line"><span>        "Notes": "",</span></span>
+<span class="line"><span>        "Output": "Something wrong\n",</span></span>
+<span class="line"><span>        "ServiceID": "order-8",</span></span>
+<span class="line"><span>        "ServiceName": "order",</span></span>
+<span class="line"><span>        "ServiceTags": [],</span></span>
+<span class="line"><span>        "Definition": {},</span></span>
+<span class="line"><span>        "CreateIndex": 1887,</span></span>
+<span class="line"><span>        "ModifyIndex": 1889</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>在上面这个这个例子中，<code>"Something wrong\n"</code> 是 <code>/bin/check_mem.py</code> 脚本的 stdout，<code>"Status": "warning"</code> 表示脚本的 exit code 为 1。exit code 和 status 具体的关系如下：</p>
+<blockquote>
+<p>Exit code 0 - Check is passing</p>
+<p>Exit code 1 - Check is warning</p>
+<p>Any other code - Check is failing</p>
+</blockquote>
+<p>除了上面展示的通过脚本来监测外，Consul 还内置了一些<a href="https://www.consul.io/docs/agent/checks.html#check-definition">常用的检测方法</a>，包括 HTTP、TCP、TTL、Docker 和 gRPC</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order-5"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"order"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "port"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">7500</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "checks"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">      "http"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://localhost:7500/health"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "method"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"POST"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "interval"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"10s"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "timeout"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"1s"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<blockquote>
+<p>↑ 一个使用 HTTP 接口进行健康度检查的服务定义</p>
+</blockquote>
+<p>通过 Consul 的健康度检查功能以及配合自己写的脚本，我们就可以根据健康度来动态地分配不同服务的流量</p>
+<p><img  src="/_astro/service-discovery-with-health-check.5IHCERlR_Zq4Ejo.webp" alt="Service discovery with health check" width="340" height="506" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ A 服务了解每个 B 服务实例的健康度，从而可以避免将流量分配到特定 B 服务实例中</p>
+</blockquote>
+<h2 id="总结">总结</h2>
+<p>这篇文章简单地介绍了一下 Consul 的两个核心特性：配置中心和服务发现。讲的不深，但是应该可以让大家对 Consul 有个清晰直观的认识。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=mxeMdl0KvBI">Introduction to HashiCorp Consul</a></li>
+<li><a href="https://learn.hashicorp.com/consul/">Learn Consul</a></li>
+<li><a href="https://www.consul.io/docs/guides/index.html">Consul Guides</a></li>
+<li><a href="https://www.consul.io/docs/index.html">Consul Documents</a></li>
+</ul> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

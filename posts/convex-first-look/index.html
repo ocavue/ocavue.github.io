@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/convex-first-look/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/convex-first-look/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/convex-first-look/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>Exploring Convex in 2025: A First Look</h1> <span class="opacity-50 text-base"> <time datetime="2025-06-24T00:00:00.000Z"> Jun 24 </time> </span> <div class="pt-10"> <p><a href="https://www.convex.dev/">Convex</a> is a backend-as-a-service (BaaS) platform. I recently spent some time exploring it. This blog post summarizes what I’ve learned so far.</p>
+<p><em>Disclaimer: I haven’t used Convex in any long-term projects. These are just my early impressions based on public content. I may update my views as I gain more hands-on experience.</em></p>
+<h2 id="tldr">TLDR</h2>
+<p>Convex is <em>excellent</em> for MVPs and hobby projects. But I’m not yet confident enough to use it for long-term and critical projects.</p>
+<h2 id="what-convex-does-well">What Convex Does Well</h2>
+<p>Convex stands out in a few areas:</p>
+<ul>
+<li>Complete TypeScript safety from end to end</li>
+<li>Real-time data sync</li>
+<li>A full-stack solution that can replace other tools like tRPC, Kysely, Zod, and Tanstack React Query</li>
+</ul>
+<p>I’ve only briefly touched on Convex’s strengths, but trust me, these advantages are truly excellent. I haven’t written much because you can find plenty of information about Convex’s benefits, whether in Convex’s <a href="https://docs.convex.dev/tutorial/">documentation</a>, <a href="https://www.youtube.com/channel/UCoC_9mdiPwIu1sDxDtGQggQ">YouTube channels</a>, and so on.</p>
+<h2 id="where-im-concerned">Where I’m Concerned</h2>
+<h3 id="1-pricing-model">1. Pricing Model</h3>
+<p>Convex charges per developer. I don’t like to pay extra fees simply because I have a new intern joining the team.</p>
+<ul>
+<li><a href="https://web.archive.org/web/20250618063557/https://www.convex.dev/pricing">Convex Professional</a>: $25/month per developer, plus usage exceeding quota</li>
+<li><a href="https://web.archive.org/web/20250622133752/https://supabase.com/pricing">Supabase Pro</a>: $25/month per project, plus usage exceeding quota</li>
+<li><a href="https://web.archive.org/web/20250619194822/https://firebase.google.com/pricing/">Firebase Blaze</a>: Pay only for usage exceeding quota</li>
+</ul>
+<h3 id="2-sla">2. SLA</h3>
+<p>Both Firebase and Supabase provide SLA <strong>commitments</strong> with compensation plans (Firebase Firestore: <a href="https://web.archive.org/web/20250130014024/https://cloud.google.com/filestore/sla">99.95%</a>, Supabase: <a href="https://web.archive.org/web/20250615145129/https://supabase.com/sla">99.9%</a>).</p>
+<p>Convex only offers a <a href="https://web.archive.org/web/20250614194324/https://docs.convex.dev/production/state/">99.99%</a> SLA <strong>target</strong> (🤨), not a guaranteed SLA. This suggests that Convex may not yet be fully mature as a cloud provider.</p>
+<h3 id="3-regional-availability">3. Regional Availability</h3>
+<p>Firebase and Supabase support deployment in different regions like Europe and Asia。</p>
+<p>Convex currently (2025 June) puts everything in <a href="https://discord.com/channels/1019350475847499849/1380203206361088072/1380261394376818770">us-east-1</a>.</p>
+<p>This may be a blocker for projects with regulatory or latency requirements, and don’t want to self-host (more on this later).</p>
+<h3 id="4-authentication">4. Authentication</h3>
+<p>Convex doesn’t have built-in user management like Firebase or Supabase.</p>
+<p>They offer a <a href="https://web.archive.org/web/20250521041702/https://docs.convex.dev/auth/convex-auth">beta auth library</a> that lets you build user tables and login flows, but it only supports client-side React and React Native for now.</p>
+<h3 id="5-self-hosting-scalability">5. Self-hosting scalability</h3>
+<p>In 2024, Convex open-sourced its backend engine. You can now self-host it if you don’t want to rely on their cloud service or need a non-US deployment. It’s a fantastic move compared to Firebase, and it reduces the risk of vendor lock-in.</p>
+<p>However, the open-source backend only runs on a <a href="https://web.archive.org/web/20250610085906/http://stack.convex.dev/self-hosted-develop-and-deploy">single machine</a>, which has limited scalability. You’ll need to modify the open-source code to scale.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Convex is a great tool, if your project fits into this narrow sweet spot:</p>
+<ul>
+<li>You’re using <strong>TypeScript</strong> (e.g. no Swift/Kotlin)</li>
+<li>You’re using <strong>React</strong> (e.g. Their svelte binding is still in v0.0.11)</li>
+<li>You’re ok deploying to a US or you’re ok with self-hosting</li>
+<li>Your user base is not too large</li>
+</ul>
+<p>If you stay within this zone, Convex provides a great developer experience. I mean really, really great. You can ship products faster and with fewer tools to manage.</p>
+<p>Replacing Convex in a large project would mean rewriting nearly everything. So using it is a big commitment. It has potential, but as a platform launched in 2022, I’d like to see a few more years of stable success before fully trusting it for serious work.</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

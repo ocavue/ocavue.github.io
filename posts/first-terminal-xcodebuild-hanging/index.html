@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/first-terminal-xcodebuild-hanging/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/first-terminal-xcodebuild-hanging/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/first-terminal-xcodebuild-hanging/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>解决第一次启动 terminal 时的卡顿问题（xcodebuild）</h1> <span class="opacity-50 text-base"> <time datetime="2022-08-22T00:00:00.000Z"> Aug 22, 2022 </time> </span> <div class="pt-10"> <p>在安装了 Xcode 后，每次重新启动 Mac 后，在第一次打开终端时，终端都会卡在 xcodebuild 进程持续 3 到 5 秒。这虽然不是一个很大的问题，但是在某些时刻这几秒的等待让人非常烦躁。</p>
+<p>我在网上看到了几种解决方案，以下是我对它们尝试的结果。</p>
+<h2 id="使用-brew-安装-git">使用 brew 安装 git</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>brew install git</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>这种方式使用 brew 安装了最新版的 git，而不是 Command Line Tools Package 或者 Xcode 自带的 git。我尝试了这种方式但是没有用。</p>
+<h2 id="配置-nvm">配置 nvm</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>nvm alias default system</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>我并没有安装 nvm，所以这种方式也不适用于我。</p>
+<h2 id="接受-xcodebuild-用户协议">接受 xcodebuild 用户协议</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>sudo xcodebuild -license accept</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>我尝试了这种方式，但是它对我也没有用。</p>
+<h2 id="修改-xcode-command-line-tools-路径">修改 Xcode command line tools 路径</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ sudo xcode-select -p</span></span>
+<span class="line"><span>/Applications/Xcode.app/Contents/Developer</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>$ sudo xcode-select -switch /Library/Developer/CommandLineTools</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>$ sudo xcode-select -p</span></span>
+<span class="line"><span>/Library/Developer/CommandLineTools</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>这种方式对我有用！</p>
+<p>如果 <code>/Library/Developer/CommandLineTools</code> 目录并不存在的话，那么可以尝试先执行 <code>sudo xcode-select --install</code>.</p>
+<p>在初始化一台新的 mac 时，我一般会先执行 <code>git --version</code> 并按照提示安装 Command Line Tools Package。后者包含了 <code>git</code>, <code>make</code> 等命令行工具。这时候我的终端不会遇到卡顿的问题。但是在从 App Store 安装了 Xcode 后，终端启动的问题就出现了。所以我的理解是 Xcode 安装的命令行工具会比 Command Line Tools Package 安装的工具有更多性能问题。所以通过 <code>xcode-select -switch</code> 命令切换到 Command Line Tools Package 安装的工具就可以解决这个问题。</p>
+<p>关于 Xcode 和 Command Line Tools Package 的关系，我引用<a href="https://developer.apple.com/library/archive/technotes/tn2339/_index.html">苹果官网文档</a>的描述：</p>
+<blockquote>
+<p>The Command Line Tools Package is a small self-contained package available for download separately from Xcode and that allows you to do command line development in OS X. It consists of two components: OS X SDK and command-line tools such as Clang, which are installed in /usr/bin.</p>
+</blockquote>
+<h2 id="总结">总结</h2>
+<p>等我下次配置一台干净的 Mac 时，我会尝试直接执行 <code>sudo xcode-select -switch /Library/Developer/CommandLineTools</code>，明确我之前执行的一些看似不成功的方案对这个问题到底有没有影响。</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

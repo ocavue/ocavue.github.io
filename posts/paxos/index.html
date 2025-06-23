@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/paxos/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/paxos/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/paxos/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>图解 Paxos 算法</h1> <span class="opacity-50 text-base"> <time datetime="2019-01-09T00:00:00.000Z"> Jan 9, 2019 </time> </span> <div class="pt-10"> <p><strong>一致性</strong>是分布式系统必须要解决的的问题，Paxos 算法就是解决分布式系统一致性的经典算法。在这篇文章中，我会用例子和图示讲解 Paxos 算法。</p>
+<p>我们先撇开细节和定义，直接用一个例子来直观地理解一下这个算法。</p>
+<p>想象一个用来卖票的分布式系统，就像 12306 那样。这个系统一共有五台机器，分布在不同的地点。为了讲解的方便，我们设定<strong>这个系统只卖一张票</strong>。五台机器有各自的数据库，用来储存买票者的名字。如果机器 A 认为把票卖给了我，而机器 B 认为把票卖给了你，那就糟糕了。于是我们要分布式系统的一致性，具体到这个例子就是保证不同机器中买票者的名字是同一个。</p>
+<p>此时机器 D 收到了来自 Alice 的买票请求。于是 D 首先进入 Prepare 阶段：,</p>
+<p>D 向其他 4 台机器发送了一条 <strong>提议</strong>（这里用<span style="color: #7EA6E0;"><strong><em>蓝色的箭头</em></strong></span>表示提议）：</p>
+<p><img  src="/_astro/1-1.C8rKAnUX_ZWWptt.svg" alt="" width="402" height="385" loading="lazy" decoding="async"></p>
+<p>其中 <code>P-1D</code> 表示：</p>
+<ol>
+<li>这是一个提议（P for Prepare）</li>
+<li>提议的 ID 是 <code>1D</code></li>
+</ol>
+<p>每个提议都需要一个递增的全局唯一 ID，最简单的方法就是当前时间加上当前机器的名字。这个 ID 会贯穿整个 Paxos 流程。值得注意的是，在提议阶段，D 并没有把购买者的名字 Alice 告诉其他机器。</p>
+<p>其他机器收到这个提议后，他们发现之前并没有收到过提议，于是同意了这份提议。具体来说是做了下面几件事：</p>
+<ol>
+<li>将 <code>P-1D</code> 记录下来</li>
+<li>承诺以后不再接受 <code>ID &#x3C; "1D"</code> 的提议</li>
+<li>向 D 回复 OK，这里用<span style="color: #EA6B66;"><strong><em>红色的箭头</em></strong></span>表示对提议的回复</li>
+</ol>
+<p><img  src="/_astro/1-2.q4cJjlAv_ZWc0xM.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>D 收到其他机器的回复后，发现加上自己的同意，发现已经有超过半数的机器同意将票卖给 Alice（事实上，所有五台机器都同意这点）。即然多数派已经同意了这份提议，那么 D 就认为认为这个提议已经被通过了，于是进入了 Commit 阶段。</p>
+<p>在 Commit 阶段，D 向所有机器发出了一个<strong>决议</strong>（这里用<span style="color: #97D077;"><strong><em>绿色的箭头</em></strong></span>表示表示决议）：</p>
+<p><img  src="/_astro/1-3.BDxNKrUh_Z24h9Tk.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>其中 <code>A-1D-Alice</code> 表示</p>
+<ul>
+<li>这是一个决议（A for Accept）</li>
+<li>决议的 ID 是 <code>1D</code></li>
+<li>决议内容：将票卖给 Alice</li>
+</ul>
+<p>其他四台机器到了这个决议后，就会把决议的内容记录下来，并返回给 D。D 最后把买票成功的消息发给 Alice，用图表示就是这样，这里用<span style="color: #B5739D;"><strong><em>紫色的箭头</em></strong></span>表示对决议的回复：</p>
+<p><img  src="/_astro/1-4.DiQ0HtVi_1uTDBg.svg" alt="" width="402" height="371" loading="lazy" decoding="async"></p>
+<p>此时，所有五台机器都认为票卖给了 Alice，一致性得到了保证。</p>
+<p>上面的情况是所有机器和网络都能正常运行的理想情况，可使现实中总是不理想的，而分布式系统的最大价值之一就是能应对部分节点的故障，所以下面我们来模拟一下节点故障的情况。</p>
+<h2 id="节点故障的例子">节点故障的例子</h2>
+<p>我们假设有两台机器 B 和 E 发生了故障，那么重复一下上面的步骤，看看会发生什么。</p>
+<p>第一步，D 接受到了 Alice 的请求，于是向其他机器<strong>发送提议</strong>：</p>
+<p><img  src="/_astro/2-1-1.hABnzdnd_Z1BzDhE.svg" alt="" width="402" height="385" loading="lazy" decoding="async"></p>
+<p>第二步，除了发生故障的 B 和 E，其他机器都<strong>回复了提议</strong>：</p>
+<p><img  src="/_astro/2-1-2.B-arvdoZ_ZjGGPs.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>第三步，D 认为提议得到了多数派（A、C、D）的认可，于是向大家<strong>发送决议</strong></p>
+<p><img  src="/_astro/2-1-3.C4nmlJ3S_Z281jrF.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>第四步，除了故障机外，其他机器都<strong>回复了决议</strong>。最后 D 向 Alice 发送购票成功的消息。</p>
+<p><img  src="/_astro/2-1-4.BYX5r9jY_ZNlfVu.svg" alt="" width="402" height="371" loading="lazy" decoding="async"></p>
+<p>到目前为止，一切都 OK。由于只有少数的机器发生了故障，依然有一个多数派（3 台机器 > 5 台机器 / 2）存在，所以系统的运行没有受到影响。但是，如果我们这时候修好了 B 和 D，就会发现一个问题：B 和 D 就像刚苏醒的植物人，他们还以为这张票没卖出去呢！Paxos 算法如何解决这种情况呢？让我们继续这个例子：</p>
+<p><img  src="/_astro/2-2-1.Cu_fdwIU_1bosUn.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<blockquote>
+<p>↑ B 和 E 恢复工作了，但是他们此时没有 <code>P-1D</code> 和 <code>C-1D-Alice</code> 的信息</p>
+</blockquote>
+<p>假如这时候 Bob 来买票了，他向机器 B 发出了买票请求，于是 B 向其他机器发送了一个提议。</p>
+<p><img  src="/_astro/2-2-2.CqN53MbI_2ttTCp.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>对于这个提议，E 的回复是 OK，但是 A、C 和 D 的回复是 <code>"1B" &#x3C; "1D", Fail</code>。因为在之前，A、C、D 已经承诺过了，他们不会接受 <code>id &#x3C; "1D"</code> 的提议请求。</p>
+<p><img  src="/_astro/2-2-3.Bbl_oYJ7_LPpWG.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>于是 B 只能放弃 <code>1B</code> 提议，而是紧接着又提出一个 ID 为 <code>2B</code> 提议，并将提议发送给其他机器：</p>
+<p><img  src="/_astro/2-2-4.CPQGa9Bq_Z1OLaiS.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>然后机器其他机器都同意了这个提议，不过 A、C 和 D 在同意提议的同时，还返回了这样一条信息：「我已经把票卖给 Alice 了，你不可能通知我把票买给其他人」：</p>
+<p><img  src="/_astro/2-2-5.Ddhbnn8U_Z1FhViG.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>B 收到了包括自己在内的五分针对 <code>2B</code> 提议的同意，所以 B 可以进入下一步，也就是发表决议了。但是知道了票已经被 Alice 拿走后，由于卖掉的票是不能再拿回来的，所以 B 被迫修改决议的内容，也就是发表一个将票卖给 Alice 的决议，毕竟：</p>
+<p><img  src="/_astro/2-2-6.CQ8us3a0_ZOBzzl.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>其他机器收到了这个决议后，也把这个决议写在自己的数据库中，并且将结果返回给 B。B 再通知 Bob 票已经被卖掉了：</p>
+<!--<img id="2-2-7" alt="2-2-7" src="./assets/paxos/2-2-7.svg"><br><i style="self-align: center;">↑  2-2-7</i>-->
+<p><img  src="/_astro/2-2-7.DXYfTkiG_1dy4wX.svg" alt="" width="402" height="361" loading="lazy" decoding="async"></p>
+<p>在这个例子中，我们的分布式系统非常好地处理了节点故障的情况，最后达到的效果如下：</p>
+<ol>
+<li>同一张票没有被卖给两个人。虽然 Bob 请求的机器 B 一开始并不知道票已经被 Alice 拿走了，但是最终 Bob 还是知道了。这就是最终一致性。</li>
+<li>最终所有机器上都储存了相同的信息，也就是 <code>P-2B</code> 和 <code>C-2B-Alice</code>。</li>
+</ol>
+<h2 id="更加现实的情况">更加现实的情况</h2>
+<p>同时处理多个 paxos 实例：</p>
+<p>在现实中，一个卖票系统不可能像上面的例子中只卖一张票。我们只要把每一张票当成一个独立的 paxos 算法流程，比如说在每个请求和响应中添加上票的唯一标示，就能从逻辑上同时处理多张票的售卖。</p>
+<p>我们做的另一个假设是一张票只会被卖出一次，但是在现实中由于可以退票，一张票可以在退票后卖个另一位顾客。在 paxos 中，我们需要引入状态机的概念：简单来说就有一个 状态 经过一个 操作 后变成了另一个状态。</p>
+<p>一张票被卖掉之后，它的状态由 可买 变成了 不可买，退票后其状态又重新变成了 可买。</p>
+<p>火车票的售卖 和 银行账号的余额 都可以表示为这样的逻辑：</p>
+<p><img  src="/_astro/sm.CHQM3owc_23RHTS.svg" alt="" width="551" height="664" loading="lazy" decoding="async"></p>
+<p>只要知道初始状态和所有的操作，根据状态机的逻辑就能算出当前的状态。我们可以为每一个状态制定一个 Paxos 算法实例，所有机器上使用 Paxos 算法同步了状态 1, 2, 3, … 这样就能在所有机器上都保存相同的记录。</p>
+<h2 id="paxos-的详细定义">Paxos 的详细定义</h2>
+<p>上面的例子中，整个流程并不是非常的严谨。为了更深入地理解 Paxos，我们需要在这里做一些枯燥的介绍。</p>
+<p>一个分布式系统中又若干个节点（上面的例子中一共有五个节点，也就是五台机器），在 Paxos 算法中，每个节点可能有三种角色：proposer、acceptor 和 learner。一个节点可以身担一个或者多个角色。其中 learner 并不会影响到决策本身，所以我们在这篇文章中不会涉及到 learner。</p>
+<p>Proposer 是提出提议（<em>prepare</em> request）和决议（<em>accept</em> request）的节点，acceptor 是接受提议和决议，并对其提议或者决议进行回复的节点。在上面的例子中，所有五个节点同时是 proposer 和 acceptor。</p>
+<p>下面是严谨地定义一次 Paxos 流程：这里我直接引用并翻译了论文原文，斜体的部分是我自己添加的一些解释：</p>
+<blockquote>
+<p>Phase 1. (a) A proposer selects a proposal number <em>n</em> and sends a <em>prepare</em> request with number <em>n</em> to a majority of acceptors.</p>
+<p>(b) If an acceptor receives a <em>prepare</em> request with number <em>n</em> greater than that of any <em>prepare</em> request to which it has already responded, then it responds to the request with a promise not to accept any more proposals numbered less than n and with the highest-numbered proposal (if any) that it has accepted.</p>
+<p>Phase 2. (a) If the proposer receives a response to its <em>prepare</em> requests (numbered n) from a majority of acceptors, then it sends an <em>accept</em> request to each of those acceptors for a proposal numbered <em>n</em> with a value <em>v</em>, where <em>v</em> is the value of the highest-numbered proposal among the responses, or is any value if the responses reported no proposals.，</p>
+<p>(b) If an acceptor receives an <em>accept</em> request for a proposal numbered <em>n</em>, it accepts the proposal unless it has already responded to a <em>prepare</em> request having a number greater than <em>n</em>.</p>
+</blockquote>
+<p><strong>阶段 1. (a) 一个 proposer 选择一个提议编号 <em>n</em>，然后将提议编号 <em>n</em> 放入 <em>prepare</em> request 中并发送给 acceptors 中的多数派。</strong></p>
+<p><em>在我们的例子中，proposer 会将 prepare request 发送给了所有的 acceptors，但是出于性能优化的考虑，即然它只需要大多数的 acceptors 同意，那么他可以只给 acceptors 中的一个多数派发送 prepare requests。具体发送给哪些 acceptors 由 proposer 自己决定。</em></p>
+<p><strong>(b) 如果一个 accptor 接受了一个 <em>prepare</em> request，其中的数字 <em>n</em> 大于这个 acceptor 已经回复过的所有 <em>prepare</em> request，那么他会回复这个 request，同时承诺不接受比 n 小的提议编号，而且会返回它已经接受过的提议中编号最大的那个提议（如果有的话）。</strong></p>
+<p><em>在我们上面的某张图中，E 只返回了 OK，因为它之前没有接受过提议，但是 ACD 除了来返回 OK 之外，还返回了之前接受过的编号最大的提议，也就是 Alice</em></p>
+<p><strong>阶段 2. (a) 如果这个 proposer 收到了来自多数 acceptors 对 <em>prepare</em> requests (编号 n) 的回复，那么他会对这些 acceptors 分别发送一个 <em>accept</em> request，其中包含提议编号 <em>n</em> 和一个值 <em>v</em>。<em>v</em> 是响应中的提议中编号最大的那个提议的值，如果响应中没有提议，那 <em>v</em> 可以是任何值。</strong></p>
+<p>在图 2-1-3 和 2-2-6 中，proposer 发送了 accept request（绿色的箭头）。其中 2-1-3 中的 v 可以是任何值 ，这里 proposer 选择了 Alice，但是 <a href="#2-2-6">2-2-6</a> 中的</p>
+<p><strong>(b) 如果一个 acceptor 收到了一个带有提议编号 <em>n</em> 的 <em>accept</em> request，除非它已经回应过一个有着比 <em>n</em> 更大的编号的 <em>prepare</em> request ，它会接受这个提议。</strong></p>
+<!-- ## Paxos 的优化 -->
+<h2 id="参考资料">参考资料</h2>
+<p><a href="https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95#%E5%AE%9E%E4%BE%8B">Paxos算法的维基百科页面</a></p>
+<p><a href="http://research.microsoft.com/users/lamport/pubs/paxos-simple.pdf">Paxos Made Simple</a> Lamport 于 2001年发布的论文。</p>
+<p><a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf</a> FLP 不可能原理</p>
+<p><a href="http://rystsov.info/2016/05/01/paxos.html">http://rystsov.info/2016/05/01/paxos.html</a> 一个 Paxos 的 JavaScript 实现</p> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

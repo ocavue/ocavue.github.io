@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/find-and-test-old-chromium/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/find-and-test-old-chromium/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/find-and-test-old-chromium/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>下载并测试旧版本的 Chromium</h1> <span class="opacity-50 text-base"> <time datetime="2022-12-15T00:00:00.000Z"> Dec 15, 2022 </time> </span> <div class="pt-10"> <p>最近发现我的 Web 项目似乎在不同版本的 Chrome 浏览器中行为不同，于是就想找一下不同版本的 Chrome 进行测试。不过因为下面的两个原因，似乎安装老版本的 Chromium 是更好的选择：</p>
+<ol>
+<li>
+<p>出于安全原因，Google 不提供老版本的 Chrome 下载。</p>
+<blockquote>
+<p>Let’s say you want a build of Chrome 44 for debugging purposes. Google does not offer old builds as they do not have up-to-date security fixes.</p>
+<p>Source: <a href="https://www.chromium.org/getting-involved/download-chromium/">Download Chromium</a></p>
+</blockquote>
+</li>
+<li>
+<p>Chrome 默认会自动升级，但是 Chromium 不会自动升级。</p>
+</li>
+</ol>
+<p>下面我将简单介绍一下下载、安装以及运行旧版本的 Chromium 时可能会遇到的问题，以及对应的解决办法。我使用的平台 M2 芯片的 macOS 12.6，其他平台应该大同小异。</p>
+<h2 id="如何下载老版本的-chromium">如何下载老版本的 Chromium</h2>
+<p>我推荐 GitHub 用户 vikyd 的这个开源项目 <a href="https://vikyd.github.io/download-chromium-history-version/">Chromium History Versions Download</a></p>
+<p>在下拉框中选择对应的平台，并输入想要下载的版本，按回车后就可以找到对应版本的链接，并跳转到 Google 官方网站下载对应的安装包。</p>
+<p><img  src="/_astro/download-chromium.Cbins5Jg_1oeXPs.webp" alt="download-chromium.png" width="2030" height="840" loading="lazy" decoding="async"></p>
+<h2 id="如何运行老版本的-chromium">如何运行老版本的 Chromium</h2>
+<p>下载并解压 <code>chrome-mac.zip</code> 后，如果直接双击打开 Chromium，会看到下面的报错 <code>"Chromium" is damaged and can't be opened</code>.</p>
+<p><img  src="/_astro/chromium-opening-error.BEWG0qIU_gEAWU.webp" alt="chromium-opening-error.png" width="744" height="724" loading="lazy" decoding="async"></p>
+<p>这个问题可以通过在 Terminal 中运行如下的命令解决：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>xattr -cr "/YOUR_DIR/Chromium.app"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>其中的 <code>YOUR_DIR</code> 需要替换为你自己的 Chromium 目录。在运行上述命令后，双击打开 Chromium 就可以正常运行了。</p>
+<h2 id="如何同时运行多个不同版本的-chromium">如何同时运行多个不同版本的 Chromium</h2>
+<p>我发现如果我尝试同时运行多个版本不同的 Chromium，它们实际上运行的都是同一个实例。在 Chromium 中打开链接 <code>chrome://settings/help</code> 或者在 console 中执行 <code>navigator.appVersion</code> 就能看到当前运行的 Chromium 版本。</p>
+<p>这个问题可以通过在命令行中使用 <code>--user-data-dir</code> 参数解决。给不同版本的 Chromium 指定不同的用户数据目录。下面是一个同时运行两个不同版本的 Chromium 的例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ mkdir /tmp/1</span></span>
+<span class="line"><span>$ mkdir /tmp/2</span></span>
+<span class="line"><span>$ open ~/Downloads/Mac_Arm_905459_chrome-mac/Chromium.app --args --user-data-dir=/tmp/1/</span></span>
+<span class="line"><span>$ open ~/Downloads/Mac_Arm_910031_chrome-mac/Chromium.app --args --user-data-dir=/tmp/2/</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><img  src="/_astro/two-chromium-instances.33NFX4Gm_2dUyDE.webp" alt="two-chromium-instances.png" width="2182" height="1194" loading="lazy" decoding="async"></p>
+<h2 id="如何找到两个不同版本的-chromium-之间的代码差异">如何找到两个不同版本的 Chromium 之间的代码差异</h2>
+<p>我想要知道两个不同的 Chromium 版本之间有哪些变更，可以打开 <a href="https://omahaproxy.appspot.com">https://omahaproxy.appspot.com</a> 并在下面的 Change Log 中分别输入新老版本号，然后点击 Show Change Log 就能看到 Chrome 的变更记录链接了</p>
+<p><img  src="/_astro/find-chromium-change-log.Di4KiCiJ_2oOoGm.webp" alt="find-chromium-change-log.png" width="2522" height="2280" loading="lazy" decoding="async"></p>
+<h2 id="如何下载-chromium-源码中的二进制文件">如何下载 Chromium 源码中的二进制文件</h2>
+<p>点击上面步骤显示的 Chrome: View Change Low 链接可以跳转到 <a href="https://chromium.googlesource.com%E3%80%82%E5%9C%A8%E8%BF%99%E9%87%8C%E4%BD%A0%E5%8F%AF%E4%BB%A5%E6%89%BE%E5%88%B0%E6%9B%B4%E8%AF%A6%E7%BB%86%E7%9A%84">https://chromium.googlesource.com。在这里你可以找到更详细的</a> Git commit message 和 diff 信息。</p>
+<p>但是，Google Source 似乎不像 GitHub 一样可以方便地直接在网页中查看或者下载二进制文件。比如我想要某个 commit 中的某张 PNG 图片，但是 Google Source 只显示了文件大小 <code>90015-byte binary file</code>，这对我没什么帮助。</p>
+<p>我不想把完整的 Chromium 下载到本地，因为它太大了。我发现 Chromium 在 GitHub 有一个镜像仓库，所以我可以直接使用 GitHub 查看我想要的二进制文件。</p>
+<p>具体来说，只需要把链接前面的 <code>https://chromium.googlesource.com/chromium/src/+/</code> 替换为 <code>https://github.com/chromium/chromium/tree/</code> 就可以了。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://chromium.googlesource.com/chromium/src/+/c75b98b895ea1d7c8c06d655704156f80e9c4ebd/third_party/blink/web_tests/platform/linux/virtual/layout_ng_svg_text/svg/text/text-selection-path-01-b-expected.png</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span> |</span></span>
+<span class="line"><span> V</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>https://github.com/chromium/chromium/tree/c75b98b895ea1d7c8c06d655704156f80e9c4ebd/third_party/blink/web_tests/platform/linux/virtual/layout_ng_svg_text/svg/text/text-selection-path-01-b-expected.png</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><img  src="/_astro/chromium-google-source-png.CgO8VXQi_1dUOuQ.webp" alt="chromium-google-source-png.png" width="2235" height="2195" loading="lazy" decoding="async">
+<img  src="/_astro/chromium-github-png.D6VrXlJi_ZNSojA.webp" alt="chromium-github-png.png" width="2235" height="2195" loading="lazy" decoding="async"></p>
+<hr>
+<h2 id="参考链接">参考链接</h2>
+<ul>
+<li><a href="https://www.chromium.org/getting-involved/download-chromium/">https://www.chromium.org/getting-involved/download-chromium/</a></li>
+<li><a href="https://support.google.com/chrome/a/answer/7125792">https://support.google.com/chrome/a/answer/7125792</a></li>
+<li><a href="https://vikyd.github.io/download-chromium-history-version/">https://vikyd.github.io/download-chromium-history-version/</a></li>
+<li><a href="https://www.reddit.com/r/MacOS/comments/q9d772/homebrew_chromium_is_damaged_and_cant_be_openend/">https://www.reddit.com/r/MacOS/comments/q9d772/homebrew_chromium_is_damaged_and_cant_be_openend/</a></li>
+<li><a href="https://stackoverflow.com/questions/3785991/can-i-run-multiple-versions-of-google-chrome-on-the-same-machine-mac-or-window">https://stackoverflow.com/questions/3785991/can-i-run-multiple-versions-of-google-chrome-on-the-same-machine-mac-or-window</a></li>
+<li><a href="https://omahaproxy.appspot.com/">https://omahaproxy.appspot.com/</a></li>
+</ul> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>

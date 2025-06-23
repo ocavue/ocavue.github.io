@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="en"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.15.4"><!-- Canonical URL --><link rel="canonical" href="https://ocavue.com/posts/pipenv/"><!-- Primary Meta Tags --><title>Ocavue</title><meta name="title" content="Ocavue"><meta name="description" content="Ocavue's Portfolio"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://ocavue.com/posts/pipenv/"><meta property="og:title" content="Ocavue"><meta property="og:description" content="Ocavue's Portfolio"><meta property="og:image" content="https://ocavue.com/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://ocavue.com/posts/pipenv/"><meta property="twitter:title" content="Ocavue"><meta property="twitter:description" content="Ocavue's Portfolio"><meta property="twitter:image" content="https://ocavue.com/preview.png"><script>
+"use strict";(()=>{(()=>{let t="theme-toggle";function o(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function l(){let e=localStorage.getItem(t);return e==="dark"||e==="light"?e:null}function n(){return l()||o()}function c(e){e===o()?localStorage.removeItem(t):localStorage.setItem(t,e)}function s(e){let m=document.documentElement;m.classList.toggle("dark",e==="dark"),m.style.colorScheme=e}function r(e){c(e),s(e)}r(n()),window.astroThemeToggle={setTheme:r,getTheme:n}})();})();
+</script><link rel="stylesheet" href="/_astro/index.SEaj0x-w.css">
+<style>::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+</style><script type="module">function m(){return typeof window>"u"?"light":window.astroThemeToggle?.getTheme?.()||"light"}function c(e){typeof window>"u"||window.astroThemeToggle?.setTheme?.(e)}function l(){const e=m();c(e==="light"?"dark":"light")}async function h(e,t,n){const o=document;if(typeof o.startViewTransition!="function"){e();return}await o.startViewTransition(()=>{e()})?.ready;const a=.7,r=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><defs><radialGradient id="toggle-theme-gradient"><stop offset="${a}"/><stop offset="1" stop-opacity="0"/></radialGradient></defs><circle cx="4" cy="4" r="4" fill="url(#toggle-theme-gradient)"/></svg>`,s=`data:image/svg+xml;base64,${window.btoa(r)}`,d=window.innerWidth,g=window.innerHeight,i=Math.ceil(Math.hypot(Math.max(t,d-t),Math.max(n,g-n))/a);document.documentElement.animate({maskImage:[`url('${s}')`,`url('${s}')`],maskRepeat:["no-repeat","no-repeat"],maskPosition:[`${t}px ${n}px`,`${t-i}px ${n-i}px`],maskSize:["0",`${2*i}px`]},{duration:500,easing:"ease-in",pseudoElement:"::view-transition-new(root)"})}function w(e){h(l,e.clientX,e.clientY)}document.getElementById("theme-toggle")?.addEventListener("click",w);
+</script>
+<script type="module" src="/_astro/page.7qqag-5g.js"></script></head> <body> <header> <nav class="py-8 flex items-center text-xl max-w-screen-md mx-auto px-4"> <a href="/" title="Home" class="flex items-center"> <img src="/favicon.svg" alt="Ocavue" class="size-10"> </a> <span class="flex-1"></span> <span class="flex gap-5"> <a href="/posts" title="Blog" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Blog</span> </a> <a href="/chat" title="Chat" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center"> <span>Chat</span> </a> <a href="https://twitter.com/ocavue" title="Twitter" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:x-logo size-6 block"></span> </a> <a href="https://github.com/ocavue" title="GitHub" class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" target="_blank"> <span class="i-ph:github-logo size-6 block"></span> </a> <button class="inline-flex opacity-50 hover:opacity-100 transition-opacity items-center" id="theme-toggle"><span class="i-ph-sun dark:i-ph-moon size-6 min-w-6 min-h-6 block"></span></button> </span> </nav> </header>  <main class="text-base dark:prose-invert prose prose-truegray max-w-screen-md mx-auto px-4 py-12">  <article> <h1>Pipenv：Python 官方钦定的包管理工具</h1> <span class="opacity-50 text-base"> <time datetime="2018-09-19T00:00:00.000Z"> Sep 19, 2018 </time> </span> <div class="pt-10"> <p>今天给大家介绍的是 python 包管理工具 Pipenv。在 Python 的<a href="https://packaging.python.org/guides/tool-recommendations/#application-dependency-management">官方文档</a>中，有这么一段话：</p>
+<blockquote>
+<p>Use Pipenv to manage library dependencies when developing Python applications … Consider other tools such as <code>pip</code> when <code>pipenv</code> <strong>does not</strong> meet your use case.”</p>
+</blockquote>
+<p>也就是说 Python 官方认为 Pipenv 比 pip 更加适合一般的用户。作为一个第三方工具，能从官方获得如此高的评价实属不易。这篇文章就向大家简要介绍一下这个工具。</p>
+<p><img src="http://wx2.sinaimg.cn/large/663aa05agy1fvf37wijb0g20rb0r2q4t.gif" alt="xkcd: Python Environment"></p>
+<blockquote>
+<p>↑ xkcd: Python Environment</p>
+</blockquote>
+<h2 id="背景知识">背景知识</h2>
+<p>在进入主题之前，首先我们要区分 Pythpn 社区中几个名字非常类似的工具。这里推荐 <a href="https://stackoverflow.com/a/41573588/9426588">stackoverflow 上 Flimm 的回答</a>，讲的十分清楚了。摘抄翻译一下本文会讲到的几个工具：</p>
+<blockquote>
+<ul>
+<li>PyPI 中的非标准库
+<ul>
+<li><strong><a href="https://pypi.python.org/pypi/virtualenv"><code>virtualenv</code></a></strong> 是一个非常流行的、用来创建虚拟环境的工具。如果你不熟悉这个工具，我强烈推荐你去学习一下，因为它真的非常有用。接下来的回答中我都会拿他进行对比。
+它的原理是在一个目录下（比如：<code>env/</code>）安装很多文件，然后在 <code>PATH</code> 环境变量的前面加上一个自定义的 <code>bin</code> 目录（比如：<code>env/bin</code>）。一个完整的 <code>python</code> 或者 <code>python3</code> 二进制文件会放入这个目录中，Python 被设计成先在相对它的路径处寻找库。它不是 Python 标准库的一部分，但是它隶属于 PyPA (Python Packaging Authority) 。激活了之后，你可以直接通过 pip 在虚拟环境中安装库。</li>
+<li><strong><a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a></strong> 用来隔离 Python 版本。比如你可能想要在 Python 2.6、2.7、3.3、3.4 和 3.5 中测试你的代码，所以你需要一种在它们之间进行切换的方式。激活之后，它会在 PATH 前面加上 <code>~/.pyenv/shims</code>，这里储存了一些 Python 命令程序 (<code>python</code>, <code>pip</code>) 。这些文件不是从系统已有的 Python 中复制出来的，而是专门用来根据环境变量 <code>PYENV_VERSION</code>、<code>.python-version</code> 文件或者 <code>~/.pyenv/version</code> 文件来决定使用哪个 Python 版本。pyenv 也简化了下载和安装多个 Python 版本的步骤，使用 <code>pyenv install</code> 命令即可。</li>
+<li><strong><a href="https://pypi.python.org/pypi/pipenv"><code>pipenv</code></a></strong>, 由 Kenneth Reitz 编写 （<code>requests</code> 的作者）（国内也称作 K 神——译者注），是这个列表当中最新的一个项目。它将 <code>Pipfile</code>, <code>pip</code> 和 <code>virtualenv</code> 结合到同一个命令行命令。 <code>virtualenv</code> 目录一般放在 <code>~/.local/share/virtualenvs/XXX</code>, 其中的 <code>XXX</code> 是项目目录的 hash。这和 virtualenv 不一样，后者一般放到当前的工作目录。</li>
+</ul>
+</li>
+<li>标准库
+<ul>
+<li><strong><a href="https://docs.python.org/3/library/venv.html"><code>venv</code></a></strong> 是 Python 3 内置的一个包（从 Python 3.3 版开始——译者注）。你可以通过 <code>python3 -m venv</code> 来运行它。它的目标和实现方式都和 <code>virtualenv</code> 非常类似，只不过它不需要复制 Python 二进制文件（Windows 除外）。除非你要使用 Python2，不然你应该选择 <code>venv</code>。不过截止本文时，Python 社区更喜欢 <code>virtualenv</code> ，<code>venv</code> 并没有什么声音。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="https://ws3.sinaimg.cn/large/0069RVTdgy1fv5thb7akng30sg0fzhe9.gif" alt="venv 的心情如图"></p>
+<blockquote>
+<p>↑ venv 的心情如图</p>
+</blockquote>
+<h2 id="安装">安装</h2>
+<p>官方文章的 <a href="https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv">Installing Pipenv</a> 一章有好几种安装的方式。在不是很重要的机器上（比如自己的开发机）可以直接使用 <code>pip install pipenv</code> 进行安装。但是如果在生产环境上安装，就需要其他方式。这里我介绍一下 <a href="https://pip.pypa.io/en/stable/user_guide/#user-installs">User Installs</a> 的方式。这种方式虽然有点繁琐，但是胜在安全，不会影响已有的 Python 环境。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#E1E4E8">[superman@server </span><span style="color:#F97583">~</span><span style="color:#E1E4E8"> ]$ pip3 install --user pipenv</span></span>
+<span class="line"><span style="color:#B392F0">    100%</span><span style="color:#F97583"> |</span><span style="color:#B392F0">████████████████████████████████</span><span style="color:#F97583">|</span><span style="color:#B392F0"> 5.0MB</span><span style="color:#9ECBFF"> 314kB/s</span></span>
+<span class="line"><span style="color:#B392F0">Successfully</span><span style="color:#9ECBFF"> installed</span><span style="color:#9ECBFF"> pipenv-2018.7.1</span></span>
+<span class="line"><span style="color:#E1E4E8">[superman@server </span><span style="color:#F97583">~</span><span style="color:#E1E4E8"> ]$ which pipenv</span></span>
+<span class="line"><span style="color:#B392F0">pipenv</span><span style="color:#9ECBFF"> not</span><span style="color:#9ECBFF"> found</span></span>
+<span class="line"></span></code></pre>
+<p>注意此时由于没有修改 <code>PATH</code>（环境变量），所以还需要找到用户目录并修改并将下面的 <code>bin</code> 目录加入 <code>PATH</code> 中。</p>
+<p>在 Linux 和 macOS 下，用户目录可以使用 <code>python -m site --user-base</code> 命令获得：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#E1E4E8">[superman@server </span><span style="color:#F97583">~</span><span style="color:#E1E4E8"> ]$ python3 -m site --user-base</span></span>
+<span class="line"><span style="color:#B392F0">/home/superman/.local</span></span>
+<span class="line"><span style="color:#E1E4E8">[superman@server </span><span style="color:#F97583">~</span><span style="color:#E1E4E8"> ]$ </span><span style="color:#F97583">export</span><span style="color:#E1E4E8"> PATH</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">$PATH:$(</span><span style="color:#B392F0">python3</span><span style="color:#79B8FF"> -m</span><span style="color:#9ECBFF"> site</span><span style="color:#79B8FF"> --user-base</span><span style="color:#E1E4E8">)/bin</span></span>
+<span class="line"><span style="color:#E1E4E8">[superman@server </span><span style="color:#F97583">~</span><span style="color:#E1E4E8"> ]$ which pipenv</span></span>
+<span class="line"><span style="color:#B392F0">/home/superman/.local/bin/pipenv</span></span>
+<span class="line"></span></code></pre>
+<p>为了方便起见，大家可以修改 <code>~/.profile</code> 或 <code>~/.bashrc</code> 或者类型的文件，加入上面设置 <code>PATH</code> 的语言，让 shell 在每次登录的时候自动设置 <code>PATH</code>。</p>
+<p>同时为了避免不同的工具链之间的相互影响，通过 User Install 方式安装的「工具链」（比如 virtualenv、pyenv 和 tox）要尽可能少。</p>
+<h2 id="基本用法">基本用法</h2>
+<p>使用 <code>pipenv install &#x3C;packagename></code> 安装包。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> myproj</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pipenv</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> requests</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">Using</span><span style="color:#9ECBFF"> /usr/bin/python3</span><span style="color:#E1E4E8"> (3.5.2) to create virtualenv...</span></span>
+<span class="line"><span style="color:#B392F0">Virtualenv</span><span style="color:#9ECBFF"> location:</span><span style="color:#9ECBFF"> /root/.local/share/virtualenvs/myproj-y53uuyLx</span></span>
+<span class="line"><span style="color:#B392F0">Creating</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> Pipfile</span><span style="color:#9ECBFF"> for</span><span style="color:#9ECBFF"> this</span><span style="color:#9ECBFF"> project..</span></span>
+<span class="line"><span style="color:#B392F0">Adding</span><span style="color:#9ECBFF"> requests</span><span style="color:#9ECBFF"> to</span><span style="color:#9ECBFF"> Pipfile's [packages]...</span></span>
+<span class="line"><span style="color:#9ECBFF">Pipfile.lock not found, creating...</span></span>
+<span class="line"><span style="color:#9ECBFF">Updated Pipfile.lock (0b4483)!</span></span>
+<span class="line"><span style="color:#9ECBFF">Installing dependencies from Pipfile.lock (0b4483)...</span></span>
+<span class="line"></span></code></pre>
+<p>在第一次执行 <code>pipenv install</code> 的时候，Pipenv 会做这么几件事情：</p>
+<ol>
+<li>创建 virtualenv 环境</li>
+<li>创建 <code>Pipfile</code> 文件</li>
+<li>创建 <code>Pipfile.lock</code> 文件</li>
+<li>安装依赖</li>
+</ol>
+<p>其他常用命令:</p>
+<ul>
+<li><code>pipenv install</code>：安装 <code>Pipfile</code> 中 <code>[packages]</code> 下面的包</li>
+<li><code>pipenv install --dev</code>：安装 <code>Pipfile</code> 中 <code>[packages]</code> 和 <code>[dev-packages]</code> 下面的包</li>
+<li><code>pipenv install &#x3C;package></code>：在当前环境安装包，并将相关信息写入 <code>Pipfile</code> 的 <code>[packages]</code> 和 <code>Pipfile.lock</code></li>
+<li><code>pipenv install &#x3C;package> --dev</code>：在当前环境安装包，并将相关信息写入 <code>Pipfile</code> 的 <code>[dev-packages]</code> 和 <code>Pipfile.lock</code></li>
+<li><code>pipenv uninstall &#x3C;package></code>: 在当前环境卸载包，并将相关信息从 <code>Pipfile</code> 和 <code>Pipfile.lock</code> 中移除</li>
+<li><code>pipenv lock</code>：确认 <code>Pipfile</code> 中所有包已安装，并根据安装版本生成 <code>Pipfile.lock</code></li>
+<li><code>pipenv --rm</code>：删除 virtualenv 环境</li>
+<li><code>pipenv --venv</code>：输出当前 virtualenv 环境的路径</li>
+<li><code>pipenv shell</code>：进入虚拟环境，类似 venv 和 virtualenv 的 <code>source ./venv/bin/activate</code></li>
+<li><code>pipenv run &#x3C;command></code>: 使用虚拟环境跑一些命令，比如 <code>pipenv run pip3 list</code></li>
+</ul>
+<h2 id="pipenv-解决了哪些问题">Pipenv 解决了哪些问题？</h2>
+<h3 id="虚拟环境和-pip-不能同时使用">虚拟环境和 pip 不能同时使用</h3>
+<p>venv 和 virtualenv 可以提供独立的 Python 环境，这是一个非常必要的功能。但是每次进入和退出环境都需要手动地执行命令，非常繁琐而且容易出错。</p>
+<p>举个例子，<code>projectA</code> 和 <code>projectB</code> 各有一个 venv 环境（位置是两个项目下的 <code>.venv</code> 目录），我想在两个 venv 环境中安装不同版本的库，正确的做法是下面这样的：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> projectA</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> .</span><span style="color:#9ECBFF"> .venv/bin/active</span></span>
+<span class="line"><span style="color:#E1E4E8">(</span><span style="color:#B392F0">venv</span><span style="color:#E1E4E8">) </span><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pip3</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> requests==</span><span style="color:#79B8FF">2.0</span><span style="color:#6A737D">  # 安装在 projectA/.venv/</span></span>
+<span class="line"><span style="color:#E1E4E8">(</span><span style="color:#B392F0">venv</span><span style="color:#E1E4E8">) </span><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> ../projectB</span></span>
+<span class="line"><span style="color:#E1E4E8">(</span><span style="color:#B392F0">venv</span><span style="color:#E1E4E8">) </span><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> which</span><span style="color:#9ECBFF"> pip3</span></span>
+<span class="line"><span style="color:#B392F0">/tmp/projectA/venv/bin/pip3</span></span>
+<span class="line"><span style="color:#E1E4E8">(</span><span style="color:#B392F0">venv</span><span style="color:#E1E4E8">) </span><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> deactive</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> .</span><span style="color:#9ECBFF"> .venv/bin/active</span></span>
+<span class="line"><span style="color:#E1E4E8">(</span><span style="color:#B392F0">venv</span><span style="color:#E1E4E8">) </span><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pip3</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> requests==</span><span style="color:#79B8FF">2.1</span><span style="color:#6A737D">  # 安装在 projectB/.venv/</span></span>
+<span class="line"></span></code></pre>
+<p>可以看到，<strong>切换目录并不会自动地切换 venv 环境</strong>。这样不仅繁琐，而且容易造成失误，因为我可能没有注意到我所在的目录和使用的 venv/virtualenv 环境不同。</p>
+<p>使用 Pipenv 的话，就能解决这个问题了，这也是诸如 npm 等其他包管理器的行为。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> projectA</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pipenv</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> requests==</span><span style="color:#79B8FF">2.0</span><span style="color:#6A737D">  # 安装在 ~/.local/share/virtualenvs/projectA-OOSnJKux/</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> ../projectB</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pipenv</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> requests==</span><span style="color:#79B8FF">2.1</span><span style="color:#6A737D">  # 安装在 ~/.local/share/virtualenvs/projectB-XaGlAV6H/</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> projectA</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> npm</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> express-generator@4.0</span><span style="color:#6A737D">  # 安装在 projectA/node_modules/</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> ../projectB</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> npm</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> express-generator@4.2</span><span style="color:#6A737D">  # 安装在 projectB/node_modules/</span></span>
+<span class="line"></span></code></pre>
+<p>扩展阅读：<a href="https://www.kennethreitz.org/essays/a-better-pip-workflow">A Better Pip Workflow™</a></p>
+<h3 id="pip-不能精确地指定版本">pip 不能精确地指定版本</h3>
+<p>今天在开发 Python 项目的时候，一般会使用一个 <code>requirements.txt</code> 文件来保存依赖信息，这也是标准的做法。而 <code>requirements.txt</code> 有两种使用方法：</p>
+<p>第一种方式，只保存顶级依赖：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ cat requirements.txt</span></span>
+<span class="line"><span>requests[security]</span></span>
+<span class="line"><span>flask</span></span>
+<span class="line"><span>gunicorn==19.4.5</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>因为依赖及其子依赖版本并没有被固定下来，在执行 <code>pip install -r requirements.txt</code> 时会有不同的结果，可能会造成一些问题。</p>
+<p>第二种方式，</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ cat requirements.txt</span></span>
+<span class="line"><span>cffi==1.5.2</span></span>
+<span class="line"><span>cryptography==1.2.2</span></span>
+<span class="line"><span>enum34==1.1.2</span></span>
+<span class="line"><span>Flask==0.10.1</span></span>
+<span class="line"><span>gunicorn==19.4.5</span></span>
+<span class="line"><span>idna==2.0</span></span>
+<span class="line"><span>ipaddress==1.0.16</span></span>
+<span class="line"><span>itsdangerous==0.24</span></span>
+<span class="line"><span>Jinja2==2.8</span></span>
+<span class="line"><span>MarkupSafe==0.23</span></span>
+<span class="line"><span>ndg-httpsclient==0.4.0</span></span>
+<span class="line"><span>pyasn1==0.1.9</span></span>
+<span class="line"><span>pycparser==2.14</span></span>
+<span class="line"><span>pyOpenSSL==0.15.1</span></span>
+<span class="line"><span>requests==2.9.1</span></span>
+<span class="line"><span>six==1.10.0</span></span>
+<span class="line"><span>Werkzeug==0.11.4</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>这种方式所有的依赖，包括项目的依赖、和依赖的依赖，而且每个依赖都精确到具体的版本，这也是当前 Python 社区的最佳实践。顺便一提这些信息可以使用 <code>pip freeze</code> 命令输出。但是使用这种方式，管理起来不方便，没有办法很好的分清楚哪些依赖是项目直接需要的，哪些依赖是子依赖。尤其是在升级依赖版本的时候，这种混乱会造成很多困难。</p>
+<p>Pipenv 的解决方案是 <code>Pipfile</code> 和 <code>Pipfile.lock</code> ，使用它们来替代老旧过时的 <code>requirements.txt</code></p>
+<h4 id="pipfile">Pipfile</h4>
+<p><code>Pipfile</code> 使用了 <a href="https://github.com/toml-lang/toml">TOML</a> 格式而不是 <code>requirements.txt</code> 的纯文本，其中储存了生产环境(<code>[packages]</code>)和开发环境(<code>[dev-packages]</code>)下所需要的顶级依赖。下面有个简单的例子</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="toml"><code><span class="line"><span style="color:#E1E4E8">[[</span><span style="color:#B392F0">source</span><span style="color:#E1E4E8">]]</span></span>
+<span class="line"><span style="color:#E1E4E8">url = </span><span style="color:#9ECBFF">"https://pypi.python.org/simple"</span></span>
+<span class="line"><span style="color:#E1E4E8">verify_ssl = </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">name = </span><span style="color:#9ECBFF">"pypi"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[</span><span style="color:#B392F0">packages</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">requests = </span><span style="color:#9ECBFF">"*"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[</span><span style="color:#B392F0">dev-packages</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">pytest = </span><span style="color:#9ECBFF">"*"</span></span>
+<span class="line"></span></code></pre>
+<h4 id="pipfilelock">Pipfile.lock</h4>
+<p><code>Pipfile.lock</code> 实际上是一个 JSON 文件，保存着所有的依赖的版本和 hash 信息。这个文件应该提交到 git 仓库里（除非你同时面向多个 Python 版本开发），而且在任何情况下，都不应该手动地修改这个文件。</p>
+<p>一个 <code>Pipfile.lock</code> 文件的例子：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "_meta"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "hash"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "sha256"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"8d14434df45e0ef884d6c3f6e8048ba72335637a8631cc44792f52fd20b6f97a"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "host-environment-markers"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "implementation_name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"cpython"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "implementation_version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"3.6.1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "os_name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"posix"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "platform_machine"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"x86_64"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "platform_python_implementation"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"CPython"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "platform_release"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"16.7.0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "platform_system"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Darwin"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "platform_version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Darwin Kernel Version 16.7.0: Thu Jun 15 17:36:27 PDT 2017; root:xnu-3789.70.16~2/RELEASE_X86_64"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "python_full_version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"3.6.1"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "python_version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"3.6"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "sys_platform"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"darwin"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "pipfile-spec"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "requires"</span><span style="color:#E1E4E8">: {},</span></span>
+<span class="line"><span style="color:#79B8FF">    "sources"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#79B8FF">        "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"pypi"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "url"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"https://pypi.python.org/simple"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "verify_ssl"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    ]</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "default"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "certifi"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:54a07c09c586b0e4c619f02a5e94e36619da8e2b053e20f594348c0611803704"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:40523d2efb60523e113b44602298f0960e900388cf3bb6043f645cf57ea9e3f5"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==2017.7.27.1"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "chardet"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==3.0.4"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "idna"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:8c7309c718f94b3a625cb648ace320157ad16ff131ae0af362c9f21b80ef6ec4"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==2.6"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "requests"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:6a1b267aa90cac58ac3a765d067950e7dbbf75b1da07e895d1f594193a40a38b"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:9c443e7324ba5b85070c4a818ade28bfabedf16ea10206da1132edaa6dda237e"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==2.18.4"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "urllib3"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:06330f386d6e4b195fbfc736b297f58c5a892e4440e54d294d7004e3a9bbea1b"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==1.22"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "develop"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "py"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:2ccb79b01769d99115aa600d7eed99f524bf752bba8f041dc1c184853514655a"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==1.4.34"</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#79B8FF">    "pytest"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">      "hashes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:b84f554f8ddc23add65c411bf112b2d88e2489fd45f753b1cae5936358bdf314"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "sha256:f46e49e0340a532764991c498244a60e3a37d7424a532b3ff1a6a7653f1a403a"</span></span>
+<span class="line"><span style="color:#E1E4E8">      ],</span></span>
+<span class="line"><span style="color:#79B8FF">      "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"==3.2.2"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p><code>Pipfile.lock</code> 默认使用 sha256 算法给每一个包进行 hash，这样可以保证在不安全的网络环境下也能下载到正确的包。</p>
+<p><code>Pipfile</code> 和 <code>Pipfile.lock</code> 都应该提交到版本库中。</p>
+<h2 id="pipenv-的其他特性">Pipenv 的其他特性</h2>
+<h3 id="为什么-pipenv-使用-virtualenv-而不是标准库中的-venv">为什么 Pipenv 使用 virtualenv 而不是标准库中的 venv？</h3>
+<p>根据<a href="https://github.com/pypa/pipenv/issues/15">这个 issue</a> 中的讨论，Pipenv 不使用 venv 的原因有两个：一是 Kenneth Reitz 个人更喜欢 virtualenv，二是 Pipenv 用来管理 virtualenv 的库 <a href="https://github.com/berdario/pew/pull/173">Pew</a> 目前<a href="https://github.com/berdario/pew/pull/173">还不支持 venv</a>。</p>
+<h3 id="将-virtualenv-环境的位置改为工程目录下">将 virtualenv 环境的位置改为工程目录下</h3>
+<p>Pipenv 默认会将 virtualenv 目录创建在 <code>~/.local/share/virtualenvs/</code> 中，但是<a href="https://github.com/pypa/pipenv/issues/1382">很多人希望</a>可以将 virtualenv 目录放在工程目录下。Pipenv 也提供了相应的功能，只要将环境变量中 <code>PIPENV_VENV_IN_PROJECT</code> 的值设为 <code>true</code>，Pipenv 就会在工程目录下的 <code>.venv</code> 目录创建 virtualenv 环境。不过 Pipenv 也的确提供了足够的命令用来操作 virtualenv，所以不把 virtualenv 目录放在工程目录下也是可以接受的。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> export</span><span style="color:#9ECBFF"> PIPENV_VENV_IN_PROJECT=</span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> cd</span><span style="color:#9ECBFF"> projectC</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pipenv</span><span style="color:#9ECBFF"> install</span></span>
+<span class="line"><span style="color:#B392F0">Creating</span><span style="color:#9ECBFF"> a</span><span style="color:#9ECBFF"> virtualenv</span><span style="color:#9ECBFF"> for</span><span style="color:#9ECBFF"> this</span><span style="color:#9ECBFF"> project...</span></span>
+<span class="line"><span style="color:#B392F0">Virtualenv</span><span style="color:#9ECBFF"> location:</span><span style="color:#9ECBFF"> /root/projectD/.venv</span></span>
+<span class="line"><span style="color:#B392F0">$</span><span style="color:#9ECBFF"> pipenv</span><span style="color:#79B8FF"> --venv</span></span>
+<span class="line"><span style="color:#B392F0">/root/projectC/.venv</span></span>
+<span class="line"></span></code></pre>
+<p>2019-02-13 更新：另外一个简单的办法是在项目根目录下手动创建 <code>.venv</code> 目录，然后再执行 <code>pipenv install</code>。Pipenv 会自动在工程目录下创建虚拟环境。</p>
+<h3 id="使用不同版本的-python-程序">使用不同版本的 python 程序</h3>
+<p>Pipfile 中有一个可选的 python_version 字段：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[requires]</span></span>
+<span class="line"><span>python_version = "3.7"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Pipenv 会自动地根据这个字段寻找相应的 Python 版本。如果找不到对应版本，而且安装了 pyenv 的情况下，Pipenv 还会询问你是否要使用 pyenv 安装特定版本的 Python，可以说是非常贴心了。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$ pipenv install</span></span>
+<span class="line"><span>Warning: Python 3.7 was not found on your system...</span></span>
+<span class="line"><span>Would you like us to install CPython 3.7.0 with pyenv? [Y/n]: y</span></span>
+<span class="line"><span>Installing CPython 3.7.0 with pyenv (this may take a few minutes)...</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><em>有空写一篇博客介绍一下 pyenv</em></p>
+<h3 id="自定义脚本快捷命令">自定义脚本快捷命令</h3>
+<p>Pipenv 支持在 <code>Pipefile</code> 中的 <code>[scripts]</code> 表情内添加自定义的脚本命令，并通过 <code>pipenv run &#x3C;shortcut name></code> 的方式在 virtualenv 环境中执行对应的命令，哪怕在之前并没有手动地激活 virtualenv 环境。</p>
+<p>比如在 <code>Pipefile</code> 中添加下面的代码：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[scripts]</span></span>
+<span class="line"><span>test = "python3 -m unittest discover -s ./tests"</span></span>
+<span class="line"><span>dev = "python3 manage.py runserver 0.0.0.0:8000"</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>然后执行 <code>pipenv run test</code> 就相当于执行了 <code>pipenv run python3 -m unittest discover -s ./tests</code>，<code>pipenv run dev</code> 相当于 <code>pipenv run python3 manage.py runserver 0.0.0.0:8000</code>。非常方便的功能。</p>
+<h2 id="继续学习-pipenv">继续学习 Pipenv</h2>
+<p>这篇文章只是一个简要的概述，如果大家希望能够深入了解 Pipenv，可以去看官网的 <a href="https://pipenv.readthedocs.io/en/latest/#further-documentation-guides">Further Documentation Guides</a> 章节，应该可以覆盖绝大多数的使用场景了。</p>
+<h2 id="总结">总结</h2>
+<p>虽然 virtualenv 不是 Pipenv 发明的，Pipfile 也不是它第一个使用的。但是 Pipenv 能把这些工具集合在一起，再加上极其人性化的设计，是解决 Python 包管理问题的不二之选。Pipenv 完全能配得上 Python 官方给他的褒奖和推荐，推荐大家亲自去使用和感受。</p>
+<!--
+## 题外话
+
+题外话，Pipenv 的作者 K 神不仅是一名顶尖的程序员，也是一个富有个性的文青，推荐[这篇文章](http://www.sohu.com/a/216138451_737973)，了解 K 神的“逆袭”之路。
+
+--> </div> </article>  </main> <footer class="pt-10 pb-32 flex items-center justify-center max-w-screen-md mx-auto px-4"> <span class="opacity-50 text-md"> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="hover:underline">CC BY-NC-SA 4.0</a>
+2018-2025 &copy; Ocavue
+</span> </footer> </body></html>
